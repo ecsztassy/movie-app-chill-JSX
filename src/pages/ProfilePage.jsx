@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useNavigate, Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
@@ -9,7 +9,6 @@ import sekawanlimo from '../assets/sekawanlimo.jpg'
 import harusnyahoror from '../assets/harusnyahoror.jpg'
 import toystory from '../assets/toystory.jpg'
 import ibu from '../assets/ibu.jpg'
-
 
 const daftarSaya = [
   { img: warkop, alt: 'warkop', badge: 'Episode Baru', top: '10' },
@@ -22,7 +21,7 @@ const daftarSaya = [
 
 function Header({ onLogout }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const isMobile = useIsMobile() // ← tambah ini
+  const isMobile = useIsMobile()
   return (
     <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 15px' : '18px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
@@ -80,6 +79,7 @@ function ProfilePage() {
   const [editPassword, setEditPassword] = useState(false)
   const [savedMsg, setSavedMsg] = useState(false)
   const [fotoError, setFotoError] = useState('')
+  const [openMenu, setOpenMenu] = useState(null)
 
   const isPremium = localStorage.getItem('isPremium') === 'true'
   const premiumPlan = JSON.parse(localStorage.getItem('premiumPlan')) || { label: 'Individual', nominal: 49990 }
@@ -119,7 +119,6 @@ function ProfilePage() {
       <div style={{ padding: isMobile ? '20px 15px' : '40px', maxWidth: '900px' }}>
         <h1 style={{ fontSize: '24px', marginBottom: '30px' }}>Profil Saya</h1>
 
-        {/* Notif Simpan */}
         {savedMsg && (
           <div style={{ background: '#2d7ef7', color: 'white', padding: '12px 20px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
             ✅ Perubahan berhasil disimpan!
@@ -127,127 +126,68 @@ function ProfilePage() {
         )}
 
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px', alignItems: 'flex-start', marginBottom: '30px' }}>
-
-          {/* Kiri */}
-          <div style={{ flex: 1 }}>
-
-            {/* Avatar */}
+          <div style={{ flex: 1, width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
               <div style={{ position: 'relative' }}>
-                <img
-                  src={avatarSrc}
-                  alt="avatar"
-                  style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #444' }}
-                />
+                <img src={avatarSrc} alt="avatar" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #444' }} />
               </div>
               <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleFotoChange}
-                  style={{ display: 'none' }}
-                />
-                <button
-                  onClick={() => fileInputRef.current.click()}
-                  style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', marginBottom: '6px', display: 'block' }}
-                >
-                  Ubah Foto
-                </button>
+                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFotoChange} style={{ display: 'none' }} />
+                <button onClick={() => fileInputRef.current.click()} style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', marginBottom: '6px', display: 'block' }}>Ubah Foto</button>
                 <span style={{ color: '#aaa', fontSize: '12px' }}>📤 Maksimal 2MB</span>
                 {fotoError && <div style={{ color: '#E50914', fontSize: '11px', marginTop: '4px' }}>{fotoError}</div>}
               </div>
             </div>
 
-            {/* Form */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-
-              {/* Nama */}
               <div style={{ background: '#2a2a2a', borderRadius: '8px', padding: '12px 16px', position: 'relative' }}>
                 <div style={{ color: '#aaa', fontSize: '11px', marginBottom: '4px' }}>Nama Pengguna</div>
                 {editNama ? (
-                  <input
-                    value={form.nama}
-                    onChange={handleChange('nama')}
-                    autoFocus
-                    style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '90%' }}
-                  />
+                  <input value={form.nama} onChange={handleChange('nama')} autoFocus style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '90%' }} />
                 ) : (
                   <div style={{ color: 'white', fontSize: '14px' }}>{form.nama}</div>
                 )}
-                <button
-                  onClick={() => setEditNama(p => !p)}
-                  style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '14px' }}
-                >
-                  {editNama ? '✅' : '✏️'}
-                </button>
+                <button onClick={() => setEditNama(p => !p)} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '14px' }}>{editNama ? '✅' : '✏️'}</button>
               </div>
 
-              {/* Email */}
               <div style={{ background: '#2a2a2a', borderRadius: '8px', padding: '12px 16px' }}>
                 <div style={{ color: '#aaa', fontSize: '11px', marginBottom: '4px' }}>Email</div>
-                <input
-                  value={form.email}
-                  onChange={handleChange('email')}
-                  style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '100%' }}
-                />
+                <input value={form.email} onChange={handleChange('email')} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '100%' }} />
               </div>
 
-              {/* Kata Sandi */}
               <div style={{ background: '#2a2a2a', borderRadius: '8px', padding: '12px 16px', position: 'relative' }}>
                 <div style={{ color: '#aaa', fontSize: '11px', marginBottom: '4px' }}>Kata Sandi</div>
                 {editPassword ? (
-                  <input
-                    type="password"
-                    placeholder="Masukkan password baru"
-                    value={form.password}
-                    onChange={handleChange('password')}
-                    autoFocus
-                    style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '90%' }}
-                  />
+                  <input type="password" placeholder="Masukkan password baru" value={form.password} onChange={handleChange('password')} autoFocus style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '14px', outline: 'none', width: '90%' }} />
                 ) : (
                   <div style={{ color: 'white', fontSize: '14px', letterSpacing: '2px' }}>••••••••••••••</div>
                 )}
-                <button
-                  onClick={() => setEditPassword(p => !p)}
-                  style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '14px' }}
-                >
-                  {editPassword ? '✅' : '✏️'}
-                </button>
+                <button onClick={() => setEditPassword(p => !p)} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '14px' }}>{editPassword ? '✅' : '✏️'}</button>
               </div>
 
-              <button
-                onClick={handleSimpan}
-                style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', alignSelf: 'flex-start', marginTop: '4px' }}
-              >
-                Simpan
-              </button>
+              <button onClick={handleSimpan} style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', alignSelf: 'flex-start', marginTop: '4px' }}>Simpan</button>
             </div>
           </div>
 
-          {/* Kanan - Banner */}
           {isPremium ? (
-            <div style={{ background: 'linear-gradient(135deg, #3b5bdb, #5c7cfa)', borderRadius: '12px', padding: '20px', minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ background: 'linear-gradient(135deg, #3b5bdb, #5c7cfa)', borderRadius: '12px', padding: '20px', width: isMobile ? '100%' : '280px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '20px', padding: '3px 12px', fontSize: '11px', fontWeight: 'bold', alignSelf: 'flex-start' }}>Aktif</span>
               <div style={{ fontWeight: 'bold', fontSize: '15px' }}>Akun Premium {premiumPlan.label} ✨</div>
               <div style={{ color: '#ddd', fontSize: '12px', lineHeight: '1.5' }}>Paket aktif Rp{premiumPlan.nominal.toLocaleString('id-ID')}/bulan</div>
               <div style={{ color: '#aee3f5', fontSize: '11px' }}>Berlaku hingga 31 Desember 2026</div>
             </div>
           ) : (
-            <div style={{ background: '#1e1e1e', borderRadius: '12px', padding: '20px', minWidth: '280px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+            <div style={{ background: '#1e1e1e', borderRadius: '12px', padding: '20px', width: isMobile ? '100%' : '280px', boxSizing: 'border-box', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
               <div style={{ fontSize: '28px' }}>🎬</div>
               <div>
                 <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '6px' }}>Saat ini anda belum berlangganan</div>
                 <div style={{ color: '#aaa', fontSize: '11px', lineHeight: '1.5', marginBottom: '14px' }}>Dapatkan Akses Tak Terbatas ke Ribuan Film dan Series Kesukaan Kamu!</div>
-                <button onClick={() => navigate('/premium')} style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', width: '100%' }}>
-                  Mulai Berlangganan
-                </button>
+                <button onClick={() => navigate('/premium')} style={{ background: '#2d7ef7', border: 'none', color: 'white', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', width: '100%' }}>Mulai Berlangganan</button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Daftar Saya */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h2 style={{ fontSize: '18px' }}>Daftar Saya</h2>
@@ -259,29 +199,55 @@ function ProfilePage() {
         </div>
       </div>
 
-      <footer style={{ background: '#111', padding: '40px', marginTop: '50px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '60px' }}>
-          <div style={{ minWidth: '220px' }}>
-            <img src={logo} alt="Logo Chill" style={{ width: '110px', marginBottom: '15px' }} />
-            <p style={{ color: '#888', fontSize: '13px' }}>©2026 Chill All Rights Reserved.</p>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '15px', fontSize: '14px' }}>Genre</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px' }}>
-              {[['Aksi', 'Anak-anak', 'Anime', 'Britania'], ['Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama'], ['Komedi', 'Petualangan', 'Perang', 'Romantis'], ['Sains & Alam', 'Thriller']].map((col, i) => (
-                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {col.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
-                </div>
-              ))}
+      {/* --- RESPONSIVE FOOTER --- */}
+      <footer style={{ background: '#111', padding: isMobile ? '20px 15px' : '40px', marginTop: '50px' }}>
+        {!isMobile ? (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '60px' }}>
+            <div style={{ minWidth: '220px' }}>
+              <img src={logo} alt="Logo Chill" style={{ width: '110px', marginBottom: '15px' }} />
+              <p style={{ color: '#888', fontSize: '13px' }}>©2026 Chill All Rights Reserved.</p>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 'bold', marginBottom: '15px', fontSize: '14px' }}>Genre</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px' }}>
+                {[['Aksi', 'Anak-anak', 'Anime', 'Britania'], ['Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama'], ['Komedi', 'Petualangan', 'Perang', 'Romantis'], ['Sains & Alam', 'Thriller']].map((col, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {col.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '14px' }}>Bantuan</div>
+              {['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan'].map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
             </div>
           </div>
-          <div style={{ minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '14px' }}>Bantuan</div>
-            {['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan'].map(item => (
-              <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>
-            ))}
+        ) : (
+          <div>
+            <img src={logo} alt="Logo Chill" style={{ width: '85px', marginBottom: '8px' }} />
+            <p style={{ color: '#888', fontSize: '11px', marginBottom: '25px' }}>©2026 Chill All Rights Reserved.</p>
+            <div style={{ borderBottom: '1px solid #333' }}>
+              <div onClick={() => setOpenMenu(prev => prev === 'genre' ? null : 'genre')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+                Genre <span style={{ color: '#888' }}>{openMenu === 'genre' ? '▲' : '▼'}</span>
+              </div>
+              {openMenu === 'genre' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                  {['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller'].map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+                </div>
+              )}
+            </div>
+            <div style={{ borderBottom: '1px solid #333' }}>
+              <div onClick={() => setOpenMenu(prev => prev === 'bantuan' ? null : 'bantuan')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+                Bantuan <span style={{ color: '#888' }}>{openMenu === 'bantuan' ? '▲' : '▼'}</span>
+              </div>
+              {openMenu === 'bantuan' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                  {['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan'].map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </footer>
     </div>
   )
