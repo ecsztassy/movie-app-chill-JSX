@@ -100,14 +100,35 @@ function VideoPlayerPage() {
     }, 3000)
   }
 
-  const toggleFullscreen = () => {
-    if (!isFullscreen) {
-      containerRef.current?.requestFullscreen?.()
-    } else {
-      document.exitFullscreen?.()
+const toggleFullscreen = () => {
+  const elem = containerRef.current;
+  if (!elem) return;
+
+  if (!isFullscreen) {
+    // Mencoba berbagai API Fullscreen standar & mobile vendor
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera Mobile */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge Mobile */
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox Mobile */
+      elem.mozRequestFullScreen();
     }
-    setIsFullscreen(!isFullscreen)
+  } else {
+    // Keluar dari mode Fullscreen
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    }
   }
+  setIsFullscreen(!isFullscreen);
+};
 
   const closeAll = () => {
     setShowEpisodeList(false)
