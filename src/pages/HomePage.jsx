@@ -161,50 +161,54 @@ const arrowStyle = (side, isMobile) => ({
   boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
 })
 
-function Carousel({ title, movies, onSelect }) {
-  const rowRef = useRef(null)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+// Di dalam komponen Carousel kamu, cari bagian yang me-map 'movies'
+function Carousel({ title, movies }) {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const scroll = (dir) => {
-    rowRef.current.scrollLeft += dir === 'left' ? -300 : 300
-  }
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <section style={{ margin: isMobile ? '18px 12px' : '30px 40px', overflow: 'visible' }}>
-      <h2 style={{ fontSize: isMobile ? '14px' : '20px', marginBottom: isMobile ? '12px' : '18px' }}>
-        {title}
-      </h2>
-      <div style={{ position: 'relative', overflow: 'visible' }}>
-        <button onClick={() => scroll('left')} style={arrowStyle('left', isMobile)}>❮</button>
-        
-        <div ref={rowRef} style={{ display: 'flex', gap: isMobile ? '8px' : '15px', overflowX: 'auto', overflowY: 'visible', paddingBottom: '20px', paddingTop: '40px', paddingRight: '40px', scrollBehavior: 'smooth', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
-          {movies.map((m) => (
-            <MovieCard 
-              key={m.alt} 
-              img={m.img} 
-              alt={m.alt} 
-              isMobile={isMobile} 
-              movie={m}
-              onSelect={onSelect}
+    <div style={{ padding: isMobile ? '10px 15px' : '20px 40px' }}>
+      <h2 style={{ fontSize: isMobile ? '16px' : '24px', marginBottom: '10px' }}>{title}</h2>
+      
+      {/* Container list film */}
+      <div style={{
+        display: 'flex',
+        gap: isMobile ? '10px' : '20px',
+        overflowX: 'auto', /* Supaya bisa di-scroll ke kanan di HP */
+        paddingBottom: '10px',
+        scrollbarWidth: 'none' /* Sembunyikan scrollbar di Firefox */
+      }}>
+        {movies.map((movie, index) => (
+          <div key={index} style={{
+            flex: '0 0 auto',
+            width: isMobile ? '100px' : '180px', /* Ukuran card mengecil di mobile */
+          }}>
+            <img 
+              src={movie.image} 
+              alt={movie.title} 
+              style={{
+                width: '100%',
+                height: isMobile ? '150px' : '250px', /* Tinggi proporsional */
+                borderRadius: '6px',
+                objectFit: 'cover'
+              }} 
             />
-          ))}
-        </div>
-
-        <button onClick={() => scroll('right')} style={arrowStyle('right', isMobile)}>❯</button>
+          </div>
+        ))}
       </div>
-    </section>
-  )
+    </div>
+  );
 }
 
 function Header({ onLogout }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [genreOpen, setGenreOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   const genres = ['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller']
@@ -216,43 +220,78 @@ function Header({ onLogout }) {
   }, [])
 
   return (
-    <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 15px' : '18px 40px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '30px' }}>
-        <Link to="/home">
-          <img src={logo} alt="Logo Chill" style={{ width: isMobile ? '80px' : '100px', cursor: 'pointer' }} />
-        </Link>
-        <nav style={{ display: 'flex', gap: '22px', alignItems: 'center' }}>
-          <Link to="/series" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Series</Link>
-          <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Film</Link>
-          <Link to="/daftar-saya" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Daftar Saya</Link>
-          <div style={{ position: 'relative' }}>
-            <button onClick={() => setGenreOpen(!genreOpen)} style={{ background: '#2b2b2b', border: 'none', color: 'white', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
-              Genre ▼
+    <header style={{ background: '#101010', padding: isMobile ? '12px 15px' : '18px 40px', position: 'relative', zIndex: 100 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '30px' }}>
+          <Link to="/home">
+            <img src={logo} alt="Logo Chill" style={{ width: isMobile ? '70px' : '100px', cursor: 'pointer' }} />
+          </Link>
+
+          {/* Desktop Nav */}
+          {!isMobile && (
+            <nav style={{ display: 'flex', gap: '22px', alignItems: 'center' }}>
+              <Link to="/series" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Series</Link>
+              <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Film</Link>
+              <Link to="/daftar-saya" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Daftar Saya</Link>
+              <div style={{ position: 'relative' }}>
+                <button onClick={() => setGenreOpen(!genreOpen)} style={{ background: '#2b2b2b', border: 'none', color: 'white', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
+                  Genre ▼
+                </button>
+                {genreOpen && (
+                  <div style={{ position: 'absolute', top: '42px', left: 0, background: '#1b1b1b', width: '320px', padding: '14px', borderRadius: '6px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', boxShadow: '0 0 10px rgba(0,0,0,.5)', zIndex: 999 }}>
+                    {genres.map(genre => (
+                      <div key={genre} style={{ color: '#ddd', fontSize: '12px', cursor: 'pointer', padding: '4px' }}>{genre}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </nav>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Hamburger Mobile */}
+          {isMobile && (
+            <button onClick={() => setMenuOpen(p => !p)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '22px', cursor: 'pointer' }}>
+              {menuOpen ? '✕' : '☰'}
             </button>
-            {genreOpen && (
-              <div style={{ position: 'absolute', top: '42px', left: 0, background: '#1b1b1b', width: '320px', padding: '14px', borderRadius: '6px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', boxShadow: '0 0 10px rgba(0,0,0,.5)', zIndex: 999 }}>
-                {genres.map(genre => (
-                  <div key={genre} style={{ color: '#ddd', fontSize: '12px', cursor: 'pointer', padding: '4px' }}>{genre}</div>
-                ))}
+          )}
+
+          {/* Avatar */}
+          <div style={{ position: 'relative' }}>
+            <div onClick={() => setDropdownOpen(prev => !prev)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <img src={profil} alt="profile" style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', borderRadius: '50%', objectFit: 'cover' }} />
+              <span style={{ color: '#aaa', fontSize: isMobile ? '10px' : '12px' }}>▼</span>
+            </div>
+            {dropdownOpen && (
+              <div style={{ position: 'absolute', top: '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
+                <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤 Profil Saya</Link>
+                <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐ Ubah Premium</Link>
+                <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️ Logout</a>
               </div>
             )}
           </div>
-        </nav>
+        </div>
       </div>
 
-      <div style={{ position: 'relative' }}>
-        <div onClick={() => setDropdownOpen(prev => !prev)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-          <img src={profil} alt="profile" style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', borderRadius: '50%', objectFit: 'cover' }} />
-          <span style={{ color: '#aaa', fontSize: isMobile ? '10px' : '12px' }}>▼</span>
-        </div>
-        {dropdownOpen && (
-          <div style={{ position: 'absolute', top: '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
-            <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤Profil Saya</Link>
-            <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐Ubah Premium</Link>
-            <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️Logout</a>
+      {/* Mobile Menu */}
+      {isMobile && menuOpen && (
+        <div style={{ background: '#1a1a1a', borderRadius: '8px', marginTop: '12px', padding: '10px 0' }}>
+          <Link to="/series" onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', color: '#ccc', textDecoration: 'none', fontSize: '14px', borderBottom: '1px solid #2a2a2a' }}>Series</Link>
+          <Link to="/film" onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', color: '#ccc', textDecoration: 'none', fontSize: '14px', borderBottom: '1px solid #2a2a2a' }}>Film</Link>
+          <Link to="/daftar-saya" onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', color: '#ccc', textDecoration: 'none', fontSize: '14px', borderBottom: '1px solid #2a2a2a' }}>Daftar Saya</Link>
+          <div style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => setGenreOpen(p => !p)}>
+            <span style={{ color: '#ccc', fontSize: '14px' }}>Genre {genreOpen ? '▲' : '▼'}</span>
           </div>
-        )}
-      </div>
+          {genreOpen && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', padding: '0 16px 12px' }}>
+              {genres.map(genre => (
+                <div key={genre} style={{ color: '#aaa', fontSize: '12px', padding: '4px 0' }}>{genre}</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </header>
   )
 }
