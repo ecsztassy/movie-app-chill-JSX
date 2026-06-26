@@ -161,48 +161,45 @@ const arrowStyle = (side, isMobile) => ({
   boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
 })
 
-// Di dalam komponen Carousel kamu, cari bagian yang me-map 'movies'
-function Carousel({ title, movies }) {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+function Carousel({ title, movies, onSelect }) {
+  const rowRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const scroll = (dir) => {
+    rowRef.current.scrollLeft += dir === 'left' ? -300 : 300
+  }
 
   return (
-    <div style={{ padding: isMobile ? '10px 15px' : '20px 40px' }}>
-      <h2 style={{ fontSize: isMobile ? '16px' : '24px', marginBottom: '10px' }}>{title}</h2>
-      
-      {/* Container list film */}
-      <div style={{
-        display: 'flex',
-        gap: isMobile ? '10px' : '20px',
-        overflowX: 'auto', /* Supaya bisa di-scroll ke kanan di HP */
-        paddingBottom: '10px',
-        scrollbarWidth: 'none' /* Sembunyikan scrollbar di Firefox */
-      }}>
-        {movies.map((movie, index) => (
-          <div key={index} style={{
-            flex: '0 0 auto',
-            width: isMobile ? '100px' : '180px', /* Ukuran card mengecil di mobile */
-          }}>
-            <img 
-              src={movie.image} 
-              alt={movie.title} 
-              style={{
-                width: '100%',
-                height: isMobile ? '150px' : '250px', /* Tinggi proporsional */
-                borderRadius: '6px',
-                objectFit: 'cover'
-              }} 
+    <section style={{ margin: isMobile ? '18px 12px' : '30px 40px', overflow: 'visible' }}>
+      <h2 style={{ fontSize: isMobile ? '14px' : '20px', marginBottom: isMobile ? '12px' : '18px' }}>
+        {title}
+      </h2>
+      <div style={{ position: 'relative', overflow: 'visible' }}>
+        <button onClick={() => scroll('left')} style={arrowStyle('left', isMobile)}>❮</button>
+        
+        <div ref={rowRef} style={{ display: 'flex', gap: isMobile ? '8px' : '15px', overflowX: 'auto', overflowY: 'visible', paddingBottom: '20px', paddingTop: '40px', paddingRight: '40px', scrollBehavior: 'smooth', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+          {movies.map((m) => (
+            <MovieCard 
+              key={m.alt} 
+              img={m.img} 
+              alt={m.alt} 
+              isMobile={isMobile} 
+              movie={m}
+              onSelect={onSelect}
             />
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <button onClick={() => scroll('right')} style={arrowStyle('right', isMobile)}>❯</button>
       </div>
-    </div>
-  );
+    </section>
+  )
 }
 
 function Header({ onLogout }) {
