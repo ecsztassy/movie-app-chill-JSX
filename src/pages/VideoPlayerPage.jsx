@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 // Database lokal untuk urutan perpindahan film saat klik tombol Next (⏩)
 const allMovies = [
@@ -29,6 +30,7 @@ const allMovies = [
 function VideoPlayerPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const isMobile = useIsMobile()
   
   // State untuk melacak data film aktif (dinamis)
   const [currentMovie, setCurrentMovie] = useState(location.state?.movie || { title: 'Warkop DKI Reborn', img: '/src/assets/warkop.jpg' });
@@ -64,8 +66,9 @@ function VideoPlayerPage() {
   };
 
   const currentEpisodesList = getDynamicEpisodes(currentMovie.title);
-const isPremium = localStorage.getItem('isPremium') === 'true'
-const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
+  const isPremium = localStorage.getItem('isPremium') === 'true'
+  const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
+
   // Effect mengontrol jalannya progress bar otomatis dipengaruhi oleh Speed pilihan
   useEffect(() => {
     if (isPlaying) {
@@ -145,10 +148,10 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
             setShowSkipIntro(false);
           }}
           style={{
-            position: 'absolute', top: '20px', right: '20px',
+            position: 'absolute', top: isMobile ? '15px' : '20px', right: isMobile ? '15px' : '20px',
             background: 'rgba(255,255,255,0.15)', border: '1px solid white',
-            color: 'white', padding: '10px 20px', borderRadius: '6px',
-            cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
+            color: 'white', padding: isMobile ? '6px 12px' : '10px 20px', borderRadius: '6px',
+            cursor: 'pointer', fontSize: isMobile ? '11px' : '14px', fontWeight: 'bold',
             backdropFilter: 'blur(4px)', zIndex: 10
           }}
         >
@@ -160,7 +163,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
       {showControls && (
         <button
           onClick={e => { e.stopPropagation(); navigate(-1) }}
-          style={{ position: 'absolute', top: '20px', left: '20px', background: 'transparent', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer', zIndex: 10 }}
+          style={{ position: 'absolute', top: isMobile ? '15px' : '20px', left: isMobile ? '15px' : '20px', background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '20px' : '24px', cursor: 'pointer', zIndex: 10 }}
         >
           ←
         </button>
@@ -168,7 +171,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
 
       {/* CONTROLS BAR BAWAH */}
       {showControls && (
-        <div onClick={e => e.stopPropagation()} style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.85))', padding: '30px 24px 16px', zIndex: 10 }}>
+        <div onClick={e => e.stopPropagation()} style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.95))', padding: isMobile ? '20px 15px' : '30px 24px 16px', zIndex: 10 }}>
           
           {/* Progress Bar */}
           <div
@@ -177,7 +180,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
               const pct = ((e.clientX - rect.left) / rect.width) * 100
               setProgress(pct)
             }}
-            style={{ height: '4px', background: '#555', borderRadius: '2px', marginBottom: '12px', cursor: 'pointer', position: 'relative' }}
+            style={{ height: '4px', background: '#555', borderRadius: '2px', marginBottom: '16px', cursor: 'pointer', position: 'relative' }}
           >
             <div style={{ width: `${progress}%`, height: '100%', background: '#E50914', borderRadius: '2px', position: 'relative' }}>
               <div style={{ position: 'absolute', right: '-6px', top: '-4px', width: '12px', height: '12px', borderRadius: '50%', background: 'white' }} />
@@ -185,40 +188,42 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
           </div>
 
           {/* Control Row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? '12px' : '0px' }}>
             
             {/* Bagian Kiri Kontrol */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <button onClick={() => setIsPlaying(p => !p)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '22px', cursor: 'pointer' }}>
-                {isPlaying ? '⏸' : '▶'}
-              </button>
-
-              <button onClick={() => setProgress(p => Math.max(0, p - 1.67))} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }} title="Mundur 10 detik">
-                ⟲10s
-              </button>
-
-              <button onClick={() => setProgress(p => Math.min(100, p + 1.67))} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }} title="Maju 10 detik">
-                 ⟳10s
-              </button>
-
-              {/* Volume Slider */}
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button onClick={() => { setIsMuted(m => !m); setShowVolumeSlider(s => !s) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '18px', cursor: 'pointer' }}>
-                  {isMuted || volume === 0 ? '🔇' : '🔊'}
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '14px' : '20px', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '14px' : '20px' }}>
+                <button onClick={() => setIsPlaying(p => !p)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '18px' : '22px', cursor: 'pointer' }}>
+                  {isPlaying ? '⏸' : '▶'}
                 </button>
-                {showVolumeSlider && (
-                  <input type="range" min="0" max="100" value={isMuted ? 0 : volume} onChange={e => { setVolume(Number(e.target.value)); setIsMuted(false) }} style={{ width: '80px', accentColor: 'white' }} onClick={e => e.stopPropagation()} />
-                )}
+
+                <button onClick={() => setProgress(p => Math.max(0, p - 1.67))} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '16px' : '20px', cursor: 'pointer' }} title="Mundur 10 detik">
+                  ⟲10s
+                </button>
+
+                <button onClick={() => setProgress(p => Math.min(100, p + 1.67))} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '16px' : '20px', cursor: 'pointer' }} title="Maju 10 detik">
+                   ⟳10s
+                </button>
+
+                {/* Volume Slider */}
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <button onClick={() => { setIsMuted(m => !m); setShowVolumeSlider(s => !s) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '16px' : '18px', cursor: 'pointer' }}>
+                    {isMuted || volume === 0 ? '🔇' : '🔊'}
+                  </button>
+                  {showVolumeSlider && (
+                    <input type="range" min="0" max="100" value={isMuted ? 0 : volume} onChange={e => { setVolume(Number(e.target.value)); setIsMuted(false) }} style={{ width: '60px', accentColor: 'white' }} onClick={e => e.stopPropagation()} />
+                  )}
+                </div>
               </div>
 
               {/* Judul & Episode Aktif */}
-              <span style={{ color: 'white', fontSize: '13px', fontWeight: 'bold' }}>
-                {currentMovie.title} - E{currentEpisode}: {currentEpisodesList[currentEpisode - 1]?.title}
+              <span style={{ color: 'white', fontSize: isMobile ? '11px' : '13px', fontWeight: 'bold', maxWidth: isMobile ? '150px' : 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {isMobile ? `${currentMovie.title.slice(0, 10)}.. - E${currentEpisode}` : `${currentMovie.title} - E${currentEpisode}: ${currentEpisodesList[currentEpisode - 1]?.title}`}
               </span>
             </div>
 
             {/* Bagian Kanan Kontrol */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '16px' : '20px', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'flex-end' : 'flex-start' }}>
               
               {/* Tombol Film Berikutnya */}
               <button
@@ -227,7 +232,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
                   if (currentIndex !== -1 && currentIndex < allMovies.length - 1) {
                     const nextMovie = allMovies[currentIndex + 1];
                     setCurrentMovie({ title: nextMovie.title, img: nextMovie.img });
-                    setCurrentEpisode(1); // Balikkan ke episode 1 film baru
+                    setCurrentEpisode(1); 
                     setProgress(0);
                     setIsPlaying(true);
                     setShowSkipIntro(true);
@@ -235,7 +240,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
                     alert('Ini adalah film terakhir di daftar!');
                   }
                 }}
-                style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '18px' : '20px', cursor: 'pointer' }}
                 title="Film Berikutnya"
               >
                 ⏩
@@ -243,18 +248,16 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
 
               {/* Dropdown Konten/Episode */}
               <div style={{ position: 'relative' }}>
-                <button onClick={() => { setShowEpisodeList(s => !s); setShowSubtitle(false); setShowSpeed(false) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }} title="Daftar Konten">
+                <button onClick={() => { setShowEpisodeList(s => !s); setShowSubtitle(false); setShowSpeed(false) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '18px' : '20px', cursor: 'pointer' }} title="Daftar Konten">
                   ☰
                 </button>
                 {showEpisodeList && (
-                  <div style={{ position: 'absolute', bottom: '40px', right: 0, background: '#1a1a1a', borderRadius: '8px', width: '260px', padding: '8px 0', boxShadow: '0 0 12px rgba(0,0,0,0.6)' }}>
-                    <div style={{ padding: '10px 16px', fontSize: '12px', color: '#aaa', borderBottom: '1px solid #333' }}>Daftar Konten: {currentMovie.title}</div>
+                  <div style={{ position: 'absolute', bottom: '40px', right: 0, background: '#1a1a1a', borderRadius: '8px', width: isMobile ? '220px' : '260px', padding: '8px 0', boxShadow: '0 0 12px rgba(0,0,0,0.6)' }}>
+                    <div style={{ padding: '10px 16px', fontSize: '11px', color: '#aaa', borderBottom: '1px solid #333' }}>Daftar Konten</div>
                     {currentEpisodesList.map(ep => (
                       <div
                         key={ep.num}
-                        style={{ padding: '10px 16px', cursor: 'pointer', fontSize: '13px', color: currentEpisode === ep.num ? '#E50914' : 'white', display: 'flex', justifyContent: 'space-between', background: currentEpisode === ep.num ? '#2a2a2a' : 'transparent' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#2a2a2a'}
-                        onMouseLeave={e => e.currentTarget.style.background = currentEpisode === ep.num ? '#2a2a2a' : 'transparent'}
+                        style={{ padding: '10px 16px', cursor: 'pointer', fontSize: '12px', color: currentEpisode === ep.num ? '#E50914' : 'white', display: 'flex', justifyContent: 'space-between', background: currentEpisode === ep.num ? '#2a2a2a' : 'transparent' }}
                         onClick={() => {
                           setCurrentEpisode(ep.num);
                           setProgress(0);
@@ -263,93 +266,86 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
                           setShowEpisodeList(false);
                         }}
                       >
-                        <span>E{ep.num}: {ep.title.length > 20 ? ep.title.slice(0, 18) + '..' : ep.title}</span>
-                        <span style={{ color: '#aaa', fontSize: '11px' }}>{ep.duration}</span>
+                        <span>E{ep.num}: {ep.title.length > 15 ? ep.title.slice(0, 13) + '..' : ep.title}</span>
+                        <span style={{ color: '#aaa', fontSize: '10px' }}>{ep.duration}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-         {/* Subtitle & Audio Popover */}
-<div style={{ position: 'relative' }}>
-  <button 
-    onClick={(e) => { 
-      e.stopPropagation(); // Biar tidak memicu play/pause video saat klik tombol ini
-      setShowSubtitle(s => !s); 
-      setShowEpisodeList(false); 
-      setShowSpeed(false) 
-    }} 
-    style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }} 
-    title="Subtitle & Audio"
-  >
-    [CC]
-  </button>
-  {showSubtitle && (
-    <div 
-      onClick={e => e.stopPropagation()} // Cegah popover menutup sendiri saat area dalamnya diklik
-      style={{ position: 'absolute', bottom: '40px', right: 0, background: 'rgba(30,30,30,0.95)', borderRadius: '8px', width: '320px', padding: '16px', boxShadow: '0 0 12px rgba(0,0,0,0.6)', display: 'flex', gap: '30px', zIndex: 30 }}
-    >
-      {/* Kolom Pilihan Audio */}
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '12px', color: 'white' }}>Audio</div>
-        {['Bahasa Inggris', 'Bahasa Indonesia'].map((audioName) => {
-          const isSelected = currentAudio === audioName;
-          return (
-            <div 
-              key={audioName} 
-              onClick={() => setCurrentAudio(audioName)} // Set audio aktif saat diklik
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', cursor: 'pointer', fontSize: '13px', color: isSelected ? '#E50914' : 'white', fontWeight: isSelected ? 'bold' : 'normal' }}
-            >
-              <span style={{ width: '14px', display: 'inline-block', color: '#E50914' }}>
-                {isSelected ? '✓' : ''}
-              </span>
-              {audioName}
-            </div>
-          );
-        })}
-      </div>
+              {/* Subtitle & Audio Popover */}
+              <div style={{ position: 'relative' }}>
+                <button 
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    setShowSubtitle(s => !s); 
+                    setShowEpisodeList(false); 
+                    setShowSpeed(false) 
+                  }} 
+                  style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '16px' : '20px', cursor: 'pointer' }} 
+                  title="Subtitle & Audio"
+                >
+                  [CC]
+                </button>
+                {showSubtitle && (
+                  <div 
+                    onClick={e => e.stopPropagation()} 
+                    style={{ position: 'absolute', bottom: '40px', right: 0, background: 'rgba(30,30,30,0.98)', borderRadius: '8px', width: isMobile ? '260px' : '320px', padding: '14px', boxShadow: '0 0 12px rgba(0,0,0,0.6)', display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '15px' : '30px', zIndex: 30 }}
+                  >
+                    {/* Kolom Pilihan Audio */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px', color: 'white' }}>Audio</div>
+                      {['Bahasa Inggris', 'Bahasa Indonesia'].map((audioName) => {
+                        const isSelected = currentAudio === audioName;
+                        return (
+                          <div 
+                            key={audioName} 
+                            onClick={() => setCurrentAudio(audioName)} 
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', cursor: 'pointer', fontSize: '12px', color: isSelected ? '#E50914' : 'white', fontWeight: isSelected ? 'bold' : 'normal' }}
+                          >
+                            <span style={{ width: '12px', display: 'inline-block', color: '#E50914' }}>{isSelected ? '✓' : ''}</span>
+                            {audioName}
+                          </div>
+                        );
+                      })}
+                    </div>
 
-      {/* Pembatas Tengah */}
-      <div style={{ width: '1px', background: '#444' }} />
+                    {/* Pembatas Tengah */}
+                    {!isMobile && <div style={{ width: '1px', background: '#444' }} />}
 
-      {/* Kolom Pilihan Terjemahan (Subtitle) */}
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '12px', color: 'white' }}>Terjemahan</div>
-        {['Off', 'Bahasa Indonesia', 'Bahasa Inggris'].map((subName) => {
-          const isSelected = currentSubtitle === subName;
-          return (
-            <div 
-              key={subName} 
-              onClick={() => setCurrentSubtitle(subName)} // Set subtitle aktif saat diklik
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', cursor: 'pointer', fontSize: '13px', color: isSelected ? '#E50914' : 'white', fontWeight: isSelected ? 'bold' : 'normal' }}
-            >
-              <span style={{ width: '14px', display: 'inline-block', color: '#E50914' }}>
-                {isSelected ? '✓' : ''}
-              </span>
-              {subName}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  )}
-</div>
+                    {/* Kolom Pilihan Terjemahan (Subtitle) */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px', color: 'white' }}>Terjemahan</div>
+                      {['Off', 'Bahasa Indonesia', 'Bahasa Inggris'].map((subName) => {
+                        const isSelected = currentSubtitle === subName;
+                        return (
+                          <div 
+                            key={subName} 
+                            onClick={() => setCurrentSubtitle(subName)} 
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', cursor: 'pointer', fontSize: '12px', color: isSelected ? '#E50914' : 'white', fontWeight: isSelected ? 'bold' : 'normal' }}
+                          >
+                            <span style={{ width: '12px', display: 'inline-block', color: '#E50914' }}>{isSelected ? '✓' : ''}</span>
+                            {subName}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Kecepatan Video (Speed Slider) */}
               <div style={{ position: 'relative' }}>
-                <button onClick={() => { setShowSpeed(s => !s); setShowEpisodeList(false); setShowSubtitle(false) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }} title="Kecepatan">
+                <button onClick={() => { setShowSpeed(s => !s); setShowEpisodeList(false); setShowSubtitle(false) }} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '12px' : '13px', fontWeight: 'bold', cursor: 'pointer' }} title="Kecepatan">
                   {speed}⏱️
                 </button>
                 {showSpeed && (
-                  <div style={{ position: 'absolute', bottom: '40px', right: 0, background: '#1a1a1a', borderRadius: '8px', width: '130px', padding: '8px 0', boxShadow: '0 0 12px rgba(0,0,0,0.6)' }}>
-                    <div style={{ padding: '10px 16px', fontSize: '12px', color: '#aaa', borderBottom: '1px solid #333' }}>Kecepatan</div>
+                  <div style={{ position: 'absolute', bottom: '40px', right: 0, background: '#1a1a1a', borderRadius: '8px', width: '110px', padding: '6px 0', boxShadow: '0 0 12px rgba(0,0,0,0.6)' }}>
                     {speedOptions.map(s => (
                       <div
                         key={s}
-                        style={{ padding: '10px 16px', cursor: 'pointer', fontSize: '13px', color: speed === s ? '#E50914' : 'white' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#2a2a2a'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        style={{ padding: '8px 16px', cursor: 'pointer', fontSize: '12px', color: speed === s ? '#E50914' : 'white' }}
                         onClick={() => { setSpeed(s); setShowSpeed(false) }}
                       >
                         {s}
@@ -360,7 +356,7 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
               </div>
 
               {/* Fullscreen Toggle */}
-              <button onClick={toggleFullscreen} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }} title="Fullscreen">
+              <button onClick={toggleFullscreen} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: isMobile ? '18px' : '20px', cursor: 'pointer' }} title="Fullscreen">
                 ⛶
               </button>
             </div>
@@ -368,61 +364,64 @@ const [showPremiumPopup, setShowPremiumPopup] = useState(!isPremium)
           </div>
         </div>
       )}
+
+      {/* POPUP LAYANAN PREMIUM */}
       {showPremiumPopup && (
-  <div
-    onClick={e => e.stopPropagation()}
-    style={{
-      position: 'absolute', inset: 0,
-      background: 'rgba(0,0,0,0.85)',
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      zIndex: 100, padding: '40px',
-    }}
-  >
-    <h2 style={{color: '#aaa', fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
-      Layanan Premium ⭐
-    </h2>
-    <p style={{ color: '#aaa', fontSize: '14px', marginBottom: '40px' }}>
-      Tingkatkan paket anda untuk dapat menonton video ini.
-    </p>
-    <p style={{color: '#aaa', fontSize: '16px', fontWeight: 'bold', marginBottom: '30px' }}>
-      Kenapa Harus Berlangganan?
-    </p>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px 60px', marginBottom: '40px', textAlign: 'center' }}>
-      {[
-        { icon: '⬇️', label: 'Download Konten\nPilihan' },
-        { icon: '🚫', label: 'Tidak Ada Iklan' },
-        { icon: '🎬', label: 'Tonton Semua Konten' },
-        { icon: '4K', label: 'Kualitas Maksimal\nSampai Dengan 4K', is4k: true },
-        { icon: '💻', label: 'Tonton di Tv, Tablet,\nMobile, dan Laptop' },
-        { icon: '💬', label: 'Subtitle Untuk Konten\nPilihan' },
-      ].map((f, i) => (
-        <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '50px', height: '50px', borderRadius: '10px',
-            background: 'rgba(255,255,255,0.1)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: f.is4k ? '14px' : '22px',
-            fontWeight: f.is4k ? 'bold' : 'normal', color: 'white',
-          }}>
-            {f.icon}
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: 'absolute', inset: 0,
+            background: 'rgba(0,0,0,0.92)',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            zIndex: 100, padding: isMobile ? '20px' : '40px',
+            overflowY: 'auto'
+          }}
+        >
+          <h2 style={{color: '#fff', fontSize: isMobile ? '22px' : '28px', fontWeight: 'bold', marginBottom: '8px' }}>
+            Layanan Premium ⭐
+          </h2>
+          <p style={{ color: '#aaa', fontSize: isMobile ? '12px' : '14px', marginBottom: isMobile ? '24px' : '40px', textAlign: 'center' }}>
+            Tingkatkan paket anda untuk dapat menonton video ini.
+          </p>
+          <p style={{color: '#fff', fontSize: isMobile ? '14px' : '16px', fontWeight: 'bold', marginBottom: isMobile ? '20px' : '30px' }}>
+            Kenapa Harus Berlangganan?
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: isMobile ? '16px' : '30px 60px', marginBottom: isMobile ? '30px' : '40px', textAlign: 'center', maxWidth: '600px' }}>
+            {[
+              { icon: '⬇️', label: 'Download Konten\nPilihan' },
+              { icon: '🚫', label: 'Tidak Ada Iklan' },
+              { icon: '🎬', label: 'Tonton Semua Konten' },
+              { icon: '4K', label: 'Kualitas Maksimal\nSampai Dengan 4K', is4k: true },
+              { icon: '💻', label: 'Tonton di Tv, Tablet,\nMobile, dan Laptop' },
+              { icon: '💬', label: 'Subtitle Untuk Konten\nPilihan' },
+            ].map((f, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '44px', height: '44px', borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: f.is4k ? '12px' : '18px',
+                  fontWeight: f.is4k ? 'bold' : 'normal', color: 'white',
+                }}>
+                  {f.icon}
+                </div>
+                <div style={{ fontSize: '11px', color: '#ccc', whiteSpace: 'pre-line', lineHeight: '1.4' }}>{f.label}</div>
+              </div>
+            ))}
           </div>
-          <div style={{ fontSize: '12px', color: '#ccc', whiteSpace: 'pre-line', lineHeight: '1.5' }}>{f.label}</div>
+          <button
+            onClick={() => navigate('/premium')}
+            style={{
+              background: '#3b5bdb', border: 'none', color: 'white',
+              padding: isMobile ? '10px 30px' : '14px 40px', borderRadius: '30px',
+              fontSize: isMobile ? '13px' : '15px', fontWeight: 'bold', cursor: 'pointer',
+            }}
+          >
+            Ubah Jadi Premium
+          </button>
         </div>
-      ))}
-    </div>
-    <button
-      onClick={() => navigate('/premium')}
-      style={{
-        background: '#3b5bdb', border: 'none', color: 'white',
-        padding: '14px 40px', borderRadius: '30px',
-        fontSize: '15px', fontWeight: 'bold', cursor: 'pointer',
-      }}
-    >
-      Ubah Jadi Premium
-    </button>
-  </div>
-)}
+      )}
     </div>
   )
 }
