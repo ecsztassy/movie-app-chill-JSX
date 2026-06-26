@@ -479,8 +479,10 @@ function MovieCard({ img, alt, isMobile, onSelect, movie }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        minWidth: isMobile ? '110px' : '200px',
-        height: isMobile ? '150px' : '280px',
+        // Menggunakan aspect-ratio 2/3 di mobile supaya poster utuh sempurna
+        width: isMobile ? '110px' : '200px',
+        aspectRatio: isMobile ? '2/3' : 'auto', 
+        height: isMobile ? 'auto' : '280px', 
         borderRadius: '8px',
         cursor: 'pointer',
         flexShrink: 0,
@@ -490,7 +492,17 @@ function MovieCard({ img, alt, isMobile, onSelect, movie }) {
         zIndex: hovered ? 10 : 1,
       }}
     >
-      <img src={img} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
+      <img 
+        src={img} 
+        alt={alt} 
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          objectFit: 'cover', 
+          borderRadius: '8px', 
+          display: 'block' 
+        }} 
+      />
 
       {hovered && (
         <div style={{
