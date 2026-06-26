@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { useNavigate, Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
@@ -8,6 +9,7 @@ import sekawanlimo from '../assets/sekawanlimo.jpg'
 import harusnyahoror from '../assets/harusnyahoror.jpg'
 import toystory from '../assets/toystory.jpg'
 import ibu from '../assets/ibu.jpg'
+
 
 const daftarSaya = [
   { img: warkop, alt: 'warkop', badge: 'Episode Baru', top: '10' },
@@ -20,8 +22,9 @@ const daftarSaya = [
 
 function Header({ onLogout }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const isMobile = useIsMobile() // ← tambah ini
   return (
-    <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 40px' }}>
+    <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 15px' : '18px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
         <Link to="/home"><img src={logo} alt="Logo Chill" style={{ width: '100px', cursor: 'pointer' }} /></Link>
         <nav style={{ display: 'flex', gap: '22px' }}>
@@ -64,6 +67,7 @@ function MovieCard({ img, alt, badge, top }) {
 
 function ProfilePage() {
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   const fileInputRef = useRef(null)
 
   const [avatarSrc, setAvatarSrc] = useState(profil)
@@ -112,7 +116,7 @@ function ProfilePage() {
         navigate('/login')
       }} />
 
-      <div style={{ padding: '40px', maxWidth: '900px' }}>
+      <div style={{ padding: isMobile ? '20px 15px' : '40px', maxWidth: '900px' }}>
         <h1 style={{ fontSize: '24px', marginBottom: '30px' }}>Profil Saya</h1>
 
         {/* Notif Simpan */}
@@ -122,7 +126,7 @@ function ProfilePage() {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', marginBottom: '30px' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px', alignItems: 'flex-start', marginBottom: '30px' }}>
 
           {/* Kiri */}
           <div style={{ flex: 1 }}>
