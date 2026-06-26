@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
+
 
 function Header({ onLogout }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -35,6 +37,7 @@ function Header({ onLogout }) {
 function PembayaranPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const isMobile = useIsMobile() // ← tambah ini
 const paket = location.state?.paket || {
   label: 'Individual',
   harga: 'Mulai dari Rp49.990/bulan\n1 Akun',
@@ -62,7 +65,7 @@ localStorage.removeItem('premiumPlan')
   navigate('/login')
 }} />
 
-      <div style={{ padding: '40px', maxWidth: '800px' }}>
+      <div style={{ padding: isMobile ? '20px 15px' : '40px', maxWidth: '800px' }}>
         <h2 style={{ fontSize: '22px', marginBottom: '30px' }}>Ringkasan Pembayaran</h2>
 
         <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
@@ -95,7 +98,7 @@ localStorage.removeItem('premiumPlan')
             {/* Metode Pembayaran */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '13px', marginBottom: '10px', color: '#ccc' }}>Metode Pembayaran</div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px', alignItems: 'flex-start' }}>
                 {metodes.map(m => (
                   <button
                     key={m.id}
