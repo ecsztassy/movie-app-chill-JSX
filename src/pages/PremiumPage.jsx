@@ -1,4 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom'
+import { useIsMobile } from '../hooks/useIsMobile'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 import { useState } from 'react'
@@ -58,6 +59,7 @@ const pakets = [
 
 function PremiumPage() {
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   const [selectedPaket, setSelectedPaket] = useState('individual')
 
   const features = [
@@ -78,9 +80,9 @@ localStorage.removeItem('premiumPlan')
 }} />
 
       {/* Kenapa Harus Berlangganan */}
-      <div style={{ padding: '50px 40px', textAlign: 'center' }}>
+      <div style={{ padding: isMobile ? '30px 15px' : '50px 40px', textAlign: 'center' }}>
         <h2 style={{ fontSize: '22px', marginBottom: '40px' }}>Kenapa Harus Berlangganan?</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px', maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: '20px', maxWidth: '600px', margin: '0 auto' }}>
           {features.map((f, i) => (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
               <div style={{
@@ -102,7 +104,7 @@ localStorage.removeItem('premiumPlan')
         <h2 style={{ fontSize: '22px', marginBottom: '8px' }}>Pilih Paketmu</h2>
         <p style={{ color: '#aaa', fontSize: '13px', marginBottom: '30px' }}>Temukan paket sesuai kebutuhanmu!</p>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center', gap: '16px', alignItems: isMobile ? 'center' : 'flex-start' }}>
           {pakets.map(p => (
             <div
               key={p.id}
