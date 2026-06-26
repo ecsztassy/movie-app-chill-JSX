@@ -24,6 +24,18 @@ import garuda from '../assets/garuda.jpg'
 import badut from '../assets/badut.jpg'
 import minion from '../assets/minion.jpg'
 import dukun from '../assets/dukun.jpg'
+import barista from '../assets/barista.jpg'
+import batman from '../assets/batman.jpg'
+import clbk from '../assets/clbk.jpg'
+import foufo from '../assets/foufo.jpg'
+import marvel from '../assets/marvel.jpg'
+import moana from '../assets/moana.jpg'
+import petaka from '../assets/petaka.jpg'
+import robin from '../assets/robin.jpg'
+import spiderman from '../assets/spiderman.jpg'
+import superman from '../assets/super.jpg'
+import tanah from '../assets/tanah.jpg'
+import usaha from '../assets/usaha.jpg'
 
 const allFilm = [
   { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10' },
@@ -46,6 +58,18 @@ const allFilm = [
   { id: 18, img: badut, alt: 'Badut Gendong', badge: null, top: null },
   { id: 19, img: minion, alt: 'Minions & Monsters', badge: null, top: null },
   { id: 20, img: dukun, alt: 'Dukun Magang', badge: null, top: null },
+  { id: 21, img: barista, alt: 'Love Barista', badge: null, top: null },
+{ id: 22, img: batman, alt: 'The Batman', badge: 'Episode Baru', top: '10' },
+{ id: 23, img: clbk, alt: 'Cinta Lama Belum Kelar', badge: null, top: null },
+{ id: 24, img: foufo, alt: 'FOUFO', badge: 'Episode Baru', top: null },
+{ id: 25, img: marvel, alt: 'Avengers Endgame', badge: null, top: '10' },
+{ id: 26, img: moana, alt: 'Moana', badge: null, top: null },
+{ id: 27, img: petaka, alt: 'Petaka Gunung Gede', badge: null, top: '10' },
+{ id: 28, img: robin, alt: 'Robin Hood', badge: null, top: null },
+{ id: 29, img: spiderman, alt: 'Spider-Man No Way Home', badge: 'Episode Baru', top: '10' },
+{ id: 30, img: superman, alt: 'Superman Legacy', badge: null, top: '10' },
+{ id: 31, img: tanah, alt: 'Tanah Air Beta', badge: null, top: null },
+{ id: 32, img: usaha, alt: 'Usaha Belum Selesai', badge: 'Episode Baru', top: null },
 ]
 
 const initialDaftar = [
@@ -97,6 +121,7 @@ function DaftarSayaPage() {
   const [editCatatan, setEditCatatan] = useState('')
   const [notif, setNotif] = useState('')
   const [konfirmasiHapus, setKonfirmasiHapus] = useState(null)
+  
 
   const tampilNotif = (pesan) => {
     setNotif(pesan)
