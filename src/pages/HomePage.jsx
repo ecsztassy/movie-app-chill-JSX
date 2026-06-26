@@ -25,48 +25,425 @@ import garuda from '../assets/garuda.jpg'
 import badut from '../assets/badut.jpg'
 import minion from '../assets/minion.jpg'
 import dukun from '../assets/dukun.jpg'
+import barista from '../assets/barista.jpg'
+import batman from '../assets/batman.jpg'
+import clbk from '../assets/clbk.jpg'
+import foufo from '../assets/foufo.jpg'
+import marvel from '../assets/marvel.jpg'
+import moana from '../assets/moana.jpg'
+import petaka from '../assets/petaka.jpg'
+import robin from '../assets/robin.jpg'
+import spiderman from '../assets/spiderman.jpg'
+import superman from '../assets/super.jpg'
+import tanah from '../assets/tanah.jpg'
+import usaha from '../assets/usaha.jpg'
+
 
 const sections = [
   {
     title: 'Melanjutkan Tonton Film',
     movies: [
-      { img: warkop, alt: 'Warkop DKI Reborn', year: '2016', duration: '1j 38m', rating: '13+', description: 'Dono, Kasino, dan Indro kembali beraksi dalam petualangan kocak yang penuh tawa. Mereka terlibat dalam misi rahasia yang membawa mereka ke berbagai situasi konyol dan tidak terduga.', cast: 'Vino G. Bastian, Abimana Aryasatya, Rizky Hanggono', genre: 'Komedi, Aksi', director: 'Anggy Umbara', recommendations: [] },
-      { img: colony, alt: 'Colony', year: '2021', duration: '1j 52m', rating: '18+', description: 'Sebuah koloni manusia berjuang untuk bertahan hidup di planet asing yang keras. Mereka harus menghadapi ancaman dari luar dan konflik internal yang mengancam keberlangsungan hidup mereka.', cast: 'Nora Arnezeder, Iain Glen, Rufus Sewell', genre: 'Fiksi Ilmiah, Drama', director: 'Tim Fehlbaum', recommendations: [] },
-      { img: sekawanlimo, alt: 'Sekawan Limo', year: '2024', duration: '2j 5m', rating: '13+', description: 'Lima sahabat nekat mendaki gunung angker demi konten viral. Namun perjalanan itu berubah menjadi mimpi buruk ketika mereka menemukan sesuatu yang seharusnya tidak mereka temukan.', cast: 'Endy Arfian, Bimasena, Expedition Tri', genre: 'Horor, Thriller', director: 'Bayu Skak', recommendations: [] },
-      { img: harusnyahoror, alt: 'Harusnya Horor', year: '2023', duration: '1j 45m', rating: '13+', description: 'Sebuah film horor yang mengocok perut. Ketika sekelompok teman mencoba membuat film horor, mereka justru terjebak dalam situasi yang lebih konyol dari yang mereka bayangkan.', cast: 'Aci Resti, Dimas Anggara, Babe Cabita', genre: 'Komedi, Horor', director: 'Muhadkly Acho', recommendations: [] },
-      { img: toystory, alt: 'Toy Story 5', year: '2024', duration: '1j 55m', rating: 'Semua Umur', description: 'Woody, Buzz, dan seluruh geng mainan kembali dalam petualangan baru yang mengharukan. Kali ini mereka harus menghadapi tantangan terbesar dalam hidup mereka sebagai mainan.', cast: 'Tom Hanks, Tim Allen, Annie Potts', genre: 'Animasi, Keluarga, Petualangan', director: 'Josh Cooley', recommendations: [] },
-    ],
+      {
+        img: warkop,
+        alt: 'Warkop DKI Reborn',
+        year: '2016',
+        duration: '1j 38m',
+        rating: '13+',
+        description: 'Dono, Kasino, dan Indro kembali beraksi dalam petualangan kocak yang penuh tawa. Mereka terlibat dalam misi rahasia yang membawa mereka ke berbagai situasi konyol dan tidak terduga.',
+        cast: 'Vino G. Bastian, Abimana Aryasatya, Rizky Hanggono',
+        genre: 'Komedi, Aksi',
+        director: 'Anggy Umbara',
+        recommendations: []
+      },
+      {
+        img: colony,
+        alt: 'Colony',
+        year: '2021',
+        duration: '1j 52m',
+        rating: '18+',
+        description: 'Sebuah koloni manusia berjuang untuk bertahan hidup di planet asing yang keras. Mereka harus menghadapi ancaman dari luar dan konflik internal yang mengancam keberlangsungan hidup mereka.',
+        cast: 'Nora Arnezeder, Iain Glen, Rufus Sewell',
+        genre: 'Fiksi Ilmiah, Drama',
+        director: 'Tim Fehlbaum',
+        recommendations: []
+      },
+      {
+        img: sekawanlimo,
+        alt: 'Sekawan Limo',
+        year: '2024',
+        duration: '2j 5m',
+        rating: '13+',
+        description: 'Lima sahabat nekat mendaki gunung angker demi konten viral. Namun perjalanan itu berubah menjadi mimpi buruk ketika mereka menemukan sesuatu yang seharusnya tidak mereka temukan.',
+        cast: 'Endy Arfian, Bimasena, Expedition Tri',
+        genre: 'Horor, Thriller',
+        director: 'Bayu Skak',
+        recommendations: []
+      },
+      {
+        img: harusnyahoror,
+        alt: 'Harusnya Horor',
+        year: '2023',
+        duration: '1j 45m',
+        rating: '13+',
+        description: 'Sebuah film horor yang mengocok perut. Ketika sekelompok teman mencoba membuat film horor, mereka justru terjebak dalam situasi yang lebih konyol dari yang mereka bayangkan.',
+        cast: 'Aci Resti, Dimas Anggara, Babe Cabita',
+        genre: 'Komedi, Horor',
+        director: 'Muhadkly Acho',
+        recommendations: []
+      },
+      {
+        img: toystory,
+        alt: 'Toy Story 5',
+        year: '2024',
+        duration: '1j 55m',
+        rating: 'Semua Umur',
+        description: 'Woody, Buzz, dan seluruh geng mainan kembali dalam petualangan baru yang mengharukan. Kali ini mereka harus menghadapi tantangan terbesar dalam hidup mereka sebagai mainan.',
+        cast: 'Tom Hanks, Tim Allen, Annie Potts',
+        genre: 'Animasi, Keluarga, Petualangan',
+        director: 'Josh Cooley',
+        recommendations: []
+      },
+      {
+        img: barista,
+        alt: 'Love Barista',
+        year: '2024',
+        duration: '1j 42m',
+        rating: '13+',
+        description: 'Seorang barista muda berjuang mengejar impiannya membuka kedai kopi sendiri sambil menghadapi kisah cinta yang rumit dengan pelanggan setianya.',
+        cast: 'Adhisty Zara, Bryan Domani',
+        genre: 'Drama, Romansa',
+        director: 'Monty Tiwa',
+        recommendations: []
+      },
+      {
+        img: batman,
+        alt: 'The Batman',
+        year: '2022',
+        duration: '2j 56m',
+        rating: '17+',
+        description: 'Bruce Wayne menghadapi pembunuh berantai misterius bernama Riddler yang mengancam Gotham dengan serangkaian teka-teki mematikan.',
+        cast: 'Robert Pattinson, Zoe Kravitz',
+        genre: 'Action, Crime',
+        director: 'Matt Reeves',
+        recommendations: []
+      },
+      {
+        img: clbk,
+        alt: 'Cinta Lama Belum Kelar',
+        year: '2024',
+        duration: '1j 40m',
+        rating: '13+',
+        description: 'Sepasang mantan kekasih dipertemukan kembali dalam situasi yang memaksa mereka menghadapi perasaan lama yang belum selesai.',
+        cast: 'Jourdy Pranata, Prilly Latuconsina',
+        genre: 'Romansa, Drama',
+        director: 'Ernest Prakasa',
+        recommendations: []
+      }
+    ]
   },
   {
     title: 'Top Rating Film dan Series Hari Ini',
     movies: [
-      { img: furious, alt: 'The Furious', year: '2023', duration: '2j 21m', rating: '17+', description: 'Aksi balapan liar di jalanan kota yang mempertaruhkan nyawa. Seorang pembalap veteran harus kembali ke dunia ilegal untuk menyelamatkan orang yang ia cintai dari ancaman sindikat berbahaya.', cast: 'Vin Diesel, Michelle Rodriguez, Tyrese Gibson', genre: 'Aksi, Balapan', director: 'Justin Lin', recommendations: [] },
-      { img: ipar, alt: 'Ipar Adalah Maut', year: '2024', duration: '1j 50m', rating: '17+', description: 'Sebuah drama pernikahan yang mengangkat isu perselingkuhan dalam keluarga. Film ini mengisahkan kehancuran rumah tangga akibat godaan yang datang dari orang terdekat.', cast: 'Adipati Dolken, Della Dartyan, Cut Meyriska', genre: 'Drama, Romansa', director: 'Hanung Bramantyo', recommendations: [] },
-      { img: agaklaen, alt: 'Agak Laen', year: '2024', duration: '1j 44m', rating: '13+', description: 'Empat penjaga rumah hantu yang tidak laku berusaha keras membuat wahana mereka viral. Kekacauan demi kekacauan terjadi ketika rencana mereka justru menghadirkan pengunjung yang tidak diinginkan.', cast: 'Bene Dion, Muhadkly Acho, Boris Bokir, Oki Rengga', genre: 'Komedi', director: 'Muhadkly Acho', recommendations: [] },
-      { img: alas, alt: 'Alas Roban', year: '2023', duration: '1j 38m', rating: '17+', description: 'Sebuah perjalanan melewati hutan angker Alas Roban berubah menjadi teror yang mencekam. Kisah nyata tentang kejadian mistis yang dialami para pengemudi truk di jalur maut tersebut.', cast: 'Arbani Yasiz, Maudy Effrosina', genre: 'Horor, Misteri', director: 'Awi Suryadi', recommendations: [] },
-      { img: kairi, alt: 'Nobody Loves Kay', year: '2024', duration: '1j 52m', rating: '13+', description: 'Kay adalah gadis muda yang merasa tidak dicintai siapapun. Dalam pencariannya akan kasih sayang, ia bertemu berbagai karakter unik yang mengubah pandangannya tentang cinta dan keluarga.', cast: 'Beby Tsabina, Refal Hady, Aurora Ribero', genre: 'Drama, Romansa', director: 'Riri Riza', recommendations: [] },
-    ],
+      {
+        img: furious,
+        alt: 'The Furious',
+        year: '2023',
+        duration: '2j 21m',
+        rating: '17+',
+        description: 'Aksi balapan liar di jalanan kota yang mempertaruhkan nyawa. Seorang pembalap veteran harus kembali ke dunia ilegal untuk menyelamatkan orang yang ia cintai dari ancaman sindikat berbahaya.',
+        cast: 'Vin Diesel, Michelle Rodriguez, Tyrese Gibson',
+        genre: 'Aksi, Balapan',
+        director: 'Justin Lin',
+        recommendations: []
+      },
+      {
+        img: ipar,
+        alt: 'Ipar Adalah Maut',
+        year: '2024',
+        duration: '1j 50m',
+        rating: '17+',
+        description: 'Sebuah drama pernikahan yang mengangkat isu perselingkuhan dalam keluarga. Film ini mengisahkan kehancuran rumah tangga akibat godaan yang datang dari orang terdekat.',
+        cast: 'Adipati Dolken, Della Dartyan, Cut Meyriska',
+        genre: 'Drama, Romansa',
+        director: 'Hanung Bramantyo',
+        recommendations: []
+      },
+      {
+        img: agaklaen,
+        alt: 'Agak Laen',
+        year: '2024',
+        duration: '1j 44m',
+        rating: '13+',
+        description: 'Empat penjaga rumah hantu yang tidak laku berusaha keras membuat wahana mereka viral. Kekacauan demi kekacauan terjadi ketika rencana mereka justru menghadirkan pengunjung yang tidak diinginkan.',
+        cast: 'Bene Dion, Muhadkly Acho, Boris Bokir, Oki Rengga',
+        genre: 'Komedi',
+        director: 'Muhadkly Acho',
+        recommendations: []
+      },
+      {
+        img: alas,
+        alt: 'Alas Roban',
+        year: '2023',
+        duration: '1j 38m',
+        rating: '17+',
+        description: 'Sebuah perjalanan melewati hutan angker Alas Roban berubah menjadi teror yang mencekam. Kisah nyata tentang kejadian mistis yang dialami para pengemudi truk di jalur maut tersebut.',
+        cast: 'Arbani Yasiz, Maudy Effrosina',
+        genre: 'Horor, Misteri',
+        director: 'Awi Suryadi',
+        recommendations: []
+      },
+      {
+        img: kairi,
+        alt: 'Nobody Loves Kay',
+        year: '2024',
+        duration: '1j 52m',
+        rating: '13+',
+        description: 'Kay adalah gadis muda yang merasa tidak dicintai siapapun. Dalam pencariannya akan kasih sayang, ia bertemu berbagai karakter unik yang mengubah pandangannya tentang cinta dan keluarga.',
+        cast: 'Beby Tsabina, Refal Hady, Aurora Ribero',
+        genre: 'Drama, Romansa',
+        director: 'Riri Riza',
+        recommendations: []
+      },
+      {
+        img: foufo,
+        alt: 'FOUFO',
+        year: '2024',
+        duration: '1j 35m',
+        rating: 'Semua Umur',
+        description: 'Petualangan lucu penuh warna dari karakter unik yang mencoba menyelamatkan dunianya dari ancaman besar.',
+        cast: 'Voice Cast Animation',
+        genre: 'Animasi, Komedi',
+        director: 'Unknown',
+        recommendations: []
+      },
+      {
+        img: marvel,
+        alt: 'Avengers Endgame',
+        year: '2019',
+        duration: '3j 1m',
+        rating: '13+',
+        description: 'Para Avengers yang tersisa melakukan misi terakhir untuk membalikkan kehancuran besar yang disebabkan oleh Thanos.',
+        cast: 'Robert Downey Jr, Chris Evans',
+        genre: 'Action, Sci-Fi',
+        director: 'Russo Brothers',
+        recommendations: []
+      },
+      {
+        img: moana,
+        alt: 'Moana',
+        year: '2016',
+        duration: '1j 47m',
+        rating: 'Semua Umur',
+        description: 'Moana memulai perjalanan berbahaya melintasi samudra untuk menyelamatkan pulau dan rakyatnya.',
+        cast: 'Aulii Cravalho, Dwayne Johnson',
+        genre: 'Animation, Adventure',
+        director: 'Ron Clements',
+        recommendations: []
+      }
+    ]
   },
   {
     title: 'Film Trending',
     movies: [
-      { img: cell, alt: 'Ghost in the Cell', year: '2023', duration: '1j 58m', rating: '17+', description: 'Seorang tahanan dengan kemampuan supernatural harus melindungi sesama narapidana dari ancaman entitas jahat yang menghantui penjara tua tersebut sejak puluhan tahun lalu.', cast: 'John Boyega, Michael Shannon, Taron Egerton', genre: 'Horor, Thriller', director: 'James Wan', recommendations: [] },
-      { img: gjls, alt: 'GJLS', year: '2024', duration: '1j 42m', rating: '13+', description: 'Gue Juga Lo Sayang adalah kisah cinta yang penuh drama dan tawa. Empat bersahabat menghadapi konflik cinta yang rumit ketika perasaan mulai bercampur aduk di antara mereka.', cast: 'Raditya Dika, Arawinda Kirana, Chicco Jerikho', genre: 'Komedi, Romansa', director: 'Raditya Dika', recommendations: [] },
-      { img: irit, alt: 'Keluarga Super Irit', year: '2024', duration: '1j 35m', rating: 'Semua Umur', description: 'Keluarga paling irit se-Indonesia harus menghadapi tantangan ketika tiba-tiba mendapat warisan besar. Akankah mereka berubah atau tetap mempertahankan gaya hidup hemat mereka?', cast: 'Sule, Andre Taulany, Andhika Pratama', genre: 'Komedi, Keluarga', director: 'Fajar Nugros', recommendations: [] },
-      { img: jumbo, alt: 'Jumbo', year: '2025', duration: '1j 48m', rating: 'Semua Umur', description: 'Don, seorang anak yang kesepian menemukan sahabat tak terduga dalam petualangan magis yang membawanya melintasi dunia fantasi penuh warna dan keajaiban yang belum pernah ia bayangkan.', cast: 'Angga Yunanda, Aurora Ribero, Reza Rahadian', genre: 'Animasi, Petualangan, Keluarga', director: 'Ryan Adriandhy', recommendations: [] },
-      { img: sore, alt: 'Sore', year: '2024', duration: '2j 10m', rating: '13+', description: 'Sore adalah istri dari masa depan yang dikirim kembali ke masa lalu untuk menemukan suaminya sebelum mereka pernah bertemu. Sebuah kisah cinta lintas waktu yang menyentuh hati.', cast: 'Sheila Dara, Dion Wiyoko, Vanesha Prescilla', genre: 'Romansa, Drama, Fiksi Ilmiah', director: 'Yandy Laurens', recommendations: [] },
-    ],
+      {
+        img: cell,
+        alt: 'Ghost in the Cell',
+        year: '2023',
+        duration: '1j 58m',
+        rating: '17+',
+        description: 'Seorang tahanan dengan kemampuan supernatural harus melindungi sesama narapidana dari ancaman entitas jahat yang menghantui penjara tua tersebut sejak puluhan tahun lalu.',
+        cast: 'John Boyega, Michael Shannon, Taron Egerton',
+        genre: 'Horor, Thriller',
+        director: 'James Wan',
+        recommendations: []
+      },
+      {
+        img: gjls,
+        alt: 'GJLS',
+        year: '2024',
+        duration: '1j 42m',
+        rating: '13+',
+        description: 'Gue Juga Lo Sayang adalah kisah cinta yang penuh drama dan tawa. Empat bersahabat menghadapi konflik cinta yang rumit ketika perasaan mulai bercampur aduk di antara mereka.',
+        cast: 'Raditya Dika, Arawinda Kirana, Chicco Jerikho',
+        genre: 'Komedi, Romansa',
+        director: 'Raditya Dika',
+        recommendations: []
+      },
+      {
+        img: irit,
+        alt: 'Keluarga Super Irit',
+        year: '2024',
+        duration: '1j 35m',
+        rating: 'Semua Umur',
+        description: 'Keluarga paling irit se-Indonesia harus menghadapi tantangan ketika tiba-tiba mendapat warisan besar. Akankah mereka berubah atau tetap mempertahankan gaya hidup hemat mereka?',
+        cast: 'Sule, Andre Taulany, Andhika Pratama',
+        genre: 'Komedi, Keluarga',
+        director: 'Fajar Nugros',
+        recommendations: []
+      },
+      {
+        img: jumbo,
+        alt: 'Jumbo',
+        year: '2025',
+        duration: '1j 48m',
+        rating: 'Semua Umur',
+        description: 'Don, seorang anak yang kesepian menemukan sahabat tak terduga dalam petualangan magis yang membawanya melintasi dunia fantasi penuh warna dan keajaiban yang belum pernah ia bayangkan.',
+        cast: 'Angga Yunanda, Aurora Ribero, Reza Rahadian',
+        genre: 'Animasi, Petualangan, Keluarga',
+        director: 'Ryan Adriandhy',
+        recommendations: []
+      },
+      {
+        img: sore,
+        alt: 'Sore',
+        year: '2024',
+        duration: '2j 10m',
+        rating: '13+',
+        description: 'Sore adalah istri dari masa depan yang dikirim kembali ke masa lalu untuk menemukan suaminya sebelum mereka pernah bertemu. Sebuah kisah cinta lintas waktu yang menyentuh hati.',
+        cast: 'Sheila Dara, Dion Wiyoko, Vanesha Prescilla',
+        genre: 'Romansa, Drama, Fiksi Ilmiah',
+        director: 'Yandy Laurens',
+        recommendations: []
+      },
+      {
+        img: petaka,
+        alt: 'Petaka Gunung Gede',
+        year: '2024',
+        duration: '1j 46m',
+        rating: '17+',
+        description: 'Pendakian berubah menjadi teror ketika sekelompok anak muda tersesat di gunung yang dipercaya memiliki kutukan lama.',
+        cast: 'Arbani Yasiz, Kiesha Alvaro',
+        genre: 'Horror',
+        director: 'Azhar Kinoi Lubis',
+        recommendations: []
+      },
+      {
+        img: robin,
+        alt: 'Robin Hood',
+        year: '2018',
+        duration: '1j 56m',
+        rating: '13+',
+        description: 'Robin Hood memimpin pemberontakan melawan korupsi kerajaan dan menjadi simbol perjuangan rakyat kecil.',
+        cast: 'Taron Egerton, Jamie Foxx',
+        genre: 'Action, Adventure',
+        director: 'Otto Bathurst',
+        recommendations: []
+      },
+      {
+        img: spiderman,
+        alt: 'Spider-Man No Way Home',
+        year: '2021',
+        duration: '2j 28m',
+        rating: '13+',
+        description: 'Peter Parker menghadapi kekacauan multiverse ketika identitasnya terbongkar ke seluruh dunia.',
+        cast: 'Tom Holland, Zendaya',
+        genre: 'Action, Sci-Fi',
+        director: 'Jon Watts',
+        recommendations: []
+      }
+    ]
   },
   {
     title: 'Rilis Baru',
     movies: [
-      { img: ibu, alt: 'Jangan Buang Ibu', year: '2024', duration: '1j 50m', rating: '13+', description: 'Kisah perjuangan seorang ibu yang ditinggalkan anak-anaknya di panti jompo. Film ini menguras air mata dan mengingatkan kita akan pentingnya menghargai orang tua selagi masih ada.', cast: 'Nani Wijaya, Marcella Zalianty, Lukman Sardi', genre: 'Drama, Keluarga', director: 'Rako Prijanto', recommendations: [] },
-      { img: garuda, alt: 'Garuda di Dadaku', year: '2024', duration: '1j 40m', rating: 'Semua Umur', description: 'Bayu, bocah 12 tahun berbakat sepak bola berjuang meraih mimpinya bergabung dengan Timnas Indonesia. Namun kakeknya menginginkan Bayu mengikuti tradisi keluarga sebagai atlet bulu tangkis.', cast: 'Emir Mahira, Aldo Tansani, Ramzi', genre: 'Drama, Olahraga, Keluarga', director: 'Ifa Isfansyah', recommendations: [] },
-      { img: badut, alt: 'Badut Gendong', year: '2024', duration: '1j 55m', rating: '17+', description: 'Di balik kostum badut yang ceria, tersimpan kisah kelam seorang pria yang terjebak dalam lingkaran kriminal. Setiap pertunjukan bisa menjadi yang terakhir ketika hutang nyawa menagih janji.', cast: 'Ario Bayu, Putri Marino, Yoga Pratama', genre: 'Thriller, Drama', director: 'Edwin', recommendations: [] },
-      { img: minion, alt: 'Minions & Monsters', year: '2024', duration: '1j 32m', rating: 'Semua Umur', description: 'Para Minion kembali dalam petualangan seru melawan monster-monster lucu yang mengancam ketenangan dunia. Gru dan tim harus bekerja sama dengan cara yang paling tidak terduga.', cast: 'Steve Carell, Pierre Coffin, Taraji P. Henson', genre: 'Animasi, Komedi, Keluarga', director: 'Kyle Balda', recommendations: [] },
-      { img: dukun, alt: 'Dukun Magang', year: '2024', duration: '1j 45m', rating: '13+', description: 'Seorang mahasiswa tidak sengaja menjadi murid dukun sakti. Alih-alih belajar ilmu hitam, ia justru harus menggunakan kemampuannya untuk memberantas kejahatan di kampungnya.', cast: 'Jefan Nathanio, Hana Malasan, Fajar Nugros', genre: 'Komedi, Horor', director: 'Bernardus Yoyok', recommendations: [] },
-    ],
-  },
+      {
+        img: ibu,
+        alt: 'Jangan Buang Ibu',
+        year: '2024',
+        duration: '1j 50m',
+        rating: '13+',
+        description: 'Kisah perjuangan seorang ibu yang ditinggalkan anak-anaknya di panti jompo. Film ini menguras air mata dan mengingatkan kita akan pentingnya menghargai orang tua selagi masih ada.',
+        cast: 'Nani Wijaya, Marcella Zalianty, Lukman Sardi',
+        genre: 'Drama, Keluarga',
+        director: 'Rako Prijanto',
+        recommendations: []
+      },
+      {
+        img: garuda,
+        alt: 'Garuda di Dadaku',
+        year: '2024',
+        duration: '1j 40m',
+        rating: 'Semua Umur',
+        description: 'Bayu, bocah 12 tahun berbakat sepak bola berjuang meraih mimpinya bergabung dengan Timnas Indonesia. Namun kakeknya menginginkan Bayu mengikuti tradisi keluarga sebagai atlet bulu tangkis.',
+        cast: 'Emir Mahira, Aldo Tansani, Ramzi',
+        genre: 'Drama, Olahraga, Keluarga',
+        director: 'Ifa Isfansyah',
+        recommendations: []
+      },
+      {
+        img: badut,
+        alt: 'Badut Gendong',
+        year: '2024',
+        duration: '1j 55m',
+        rating: '17+',
+        description: 'Di balik kostum badut yang ceria, tersimpan kisah kelam seorang pria yang terjebak dalam lingkaran kriminal. Setiap pertunjukan bisa menjadi yang terakhir ketika hutang nyawa menagih janji.',
+        cast: 'Ario Bayu, Putri Marino, Yoga Pratama',
+        genre: 'Thriller, Drama',
+        director: 'Edwin',
+        recommendations: []
+      },
+      {
+        img: minion,
+        alt: 'Minions & Monsters',
+        year: '2024',
+        duration: '1j 32m',
+        rating: 'Semua Umur',
+        description: 'Para Minion kembali dalam petualangan seru melawan monster-monster lucu yang mengancam ketenangan dunia. Gru dan tim harus bekerja sama dengan cara yang paling tidak terduga.',
+        cast: 'Steve Carell, Pierre Coffin, Taraji P. Henson',
+        genre: 'Animasi, Komedi, Keluarga',
+        director: 'Kyle Balda',
+        recommendations: []
+      },
+      {
+        img: dukun,
+        alt: 'Dukun Magang',
+        year: '2024',
+        duration: '1j 45m',
+        rating: '13+',
+        description: 'Seorang mahasiswa tidak sengaja menjadi murid dukun sakti. Alih-alih belajar ilmu hitam, ia justru harus menggunakan kemampuannya untuk memberantas kejahatan di kampungnya.',
+        cast: 'Jefan Nathanio, Hana Malasan, Fajar Nugros',
+        genre: 'Komedi, Horor',
+        director: 'Bernardus Yoyok',
+        recommendations: []
+      },
+      {
+        img: superman,
+        alt: 'Superman Legacy',
+        year: '2025',
+        duration: '2j 10m',
+        rating: '13+',
+        description: 'Clark Kent mencoba menyeimbangkan kehidupannya sebagai jurnalis biasa dan pelindung bumi.',
+        cast: 'David Corenswet, Rachel Brosnahan',
+        genre: 'Action, Superhero',
+        director: 'James Gunn',
+        recommendations: []
+      },
+      {
+        img: tanah,
+        alt: 'Tanah Air Beta',
+        year: '2024',
+        duration: '1j 43m',
+        rating: '13+',
+        description: 'Drama keluarga tentang perjuangan bertahan hidup di tengah konflik sosial yang memisahkan orang-orang tercinta.',
+        cast: 'Reza Rahadian, Laura Basuki',
+        genre: 'Drama',
+        director: 'Hanung Bramantyo',
+        recommendations: []
+      },
+      {
+        img: usaha,
+        alt: 'Saat Aku Bersuara',
+        year: '2024',
+        duration: '1j 38m',
+        rating: '13+',
+        description: 'Seorang pemuda membangun bisnis dari nol sambil menghadapi tekanan keluarga dan persaingan keras.',
+        cast: 'Iqbaal Ramadhan, Shenina Cinnamon',
+        genre: 'Drama',
+        director: 'Yandy Laurens',
+        recommendations: []
+      }
+    ]
+  }
 ]
 
 // Fungsi untuk mengambil film acak dari seluruh kategori sections
