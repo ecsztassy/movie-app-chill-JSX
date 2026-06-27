@@ -10,6 +10,12 @@ import agaklaen from '../assets/agaklaen.jpeg'
 import kairi from '../assets/kairi.jpeg'
 import gjls from '../assets/gjls.jpg'
 import sore from '../assets/sore.jpg'
+import petaka from '../assets/petaka.jpg'
+import robin from '../assets/robin.jpg'
+import spiderman from '../assets/spiderman.jpg'
+import superman from '../assets/super.jpg'
+import tanah from '../assets/tanah.jpg'
+import usaha from '../assets/usaha.jpg'
 
 const seriesList = [
   { img: colony, alt: 'colony', badge: 'Episode Baru', top: null },
@@ -20,6 +26,12 @@ const seriesList = [
   { img: kairi, alt: 'kairi', badge: null, top: null },
   { img: gjls, alt: 'gjls', badge: 'Episode Baru', top: null },
   { img: sore, alt: 'sore', badge: null, top: '10' },
+  { img: petaka, alt: 'petaka', badge: null, top: null },
+  { img: robin, alt: 'robin', badge: null, top: '10' },
+  { img: spiderman, alt: 'spiderman', badge: null, top: '10' },
+  { img: superman, alt: 'superman', badge: 'Episode Baru', top: null },
+  { img: tanah, alt: 'tanah', badge: null, top: null },
+  { img: usaha, alt: 'usaha', badge: null, top: null },
 ]
 
 function MovieCard({ img, alt, badge, top }) {
