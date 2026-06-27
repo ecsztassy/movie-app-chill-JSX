@@ -14,6 +14,12 @@ import garuda from '../assets/garuda.jpg'
 import badut from '../assets/badut.jpg'
 import minion from '../assets/minion.jpg'
 import dukun from '../assets/dukun.jpg'
+import barista from '../assets/barista.jpg'
+import batman from '../assets/batman.jpg'
+import clbk from '../assets/clbk.jpg'
+import foufo from '../assets/foufo.jpg'
+import marvel from '../assets/marvel.jpg'
+import moana from '../assets/moana.jpg'
 
 const filmList = [
   { img: warkop, alt: 'warkop', badge: null, top: '10' },
@@ -28,6 +34,12 @@ const filmList = [
   { img: badut, alt: 'badut', badge: null, top: null },
   { img: minion, alt: 'minion', badge: null, top: null },
   { img: dukun, alt: 'dukun', badge: null, top: null },
+  { img: barista, alt: 'barista', badge: null, top: null },
+  { img: batman, alt: 'batman', badge: null, top: '10' },
+  { img: clbk, alt: 'clbk', badge: 'Episode Baru', top: null },
+  { img: foufo, alt: 'foufo', badge: null, top: null },
+  { img: marvel, alt: 'marvel', badge: null, top: '10' },
+  { img: moana, alt: 'moana', badge: 'Episode Baru', top: null },
 ]
 
 function MovieCard({ img, alt, badge, top }) {
