@@ -17,6 +17,7 @@ import superman from '../assets/super.jpg'
 import tanah from '../assets/tanah.jpg'
 import usaha from '../assets/usaha.jpg'
 
+
 const seriesList = [
   { img: colony, alt: 'colony', badge: 'Episode Baru', top: null },
   { img: sekawanlimo, alt: 'sekawanlimo', badge: null, top: '10' },
