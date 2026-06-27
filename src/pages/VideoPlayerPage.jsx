@@ -24,7 +24,20 @@ const allMovies = [
   { title: 'Garuda di Dadaku', img: '/src/assets/garuda.jpg' },
   { title: 'Badut Gendong', img: '/src/assets/badut.jpg' },
   { title: 'Minions & Monsters', img: '/src/assets/minion.jpg' },
-  { title: 'Dukun Magang', img: '/src/assets/dukun.jpg' }
+  { title: 'Dukun Magang', img: '/src/assets/dukun.jpg' },
+  { title: 'Love Barista', img: '/src/assets/barista.jpg' },
+  { title: 'The Batman', img: '/src/assets/batman.jpg' },
+  { title: 'Cinta Lama Belum Kelar', img: '/src/assets/clbk.jpg' },
+  { title: 'FOUFO', img: '/src/assets/foufo.jpg' },
+  { title: 'Avengers Endgame', img: '/src/assets/marvel.jpg' },
+  { title: 'Moana', img: '/src/assets/moana.jpg' },
+  { title: 'Petaka Gunung Gede', img: '/src/assets/petaka.jpg' },
+  { title: 'Robin Hood', img: '/src/assets/robin.jpg' },
+  { title: 'Spider-Man No Way Home', img: '/src/assets/spiderman.jpg' },
+  { title: 'Superman Legacy', img: '/src/assets/super.jpg' },
+  { title: 'Tanah Air Beta', img: '/src/assets/tanah.jpg' },
+  { title: 'Usaha Belum Selesai', img: '/src/assets/usaha.jpg' },
+  
 ];
 
 function VideoPlayerPage() {
