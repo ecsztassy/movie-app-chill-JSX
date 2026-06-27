@@ -10,7 +10,17 @@ import harusnyahoror from '../assets/harusnyahoror.jpg'
 import toystory from '../assets/toystory.jpg'
 import ibu from '../assets/ibu.jpg'
 
-const daftarSaya = [
+// Map gambar untuk mencocokkan string alt dari localStorage dengan file import assets
+const imageMap = { 
+  warkop, 
+  colony, 
+  sekawanlimo, 
+  harusnyahoror, 
+  toystory, 
+  ibu 
+}
+
+const defaultDaftarSaya = [
   { img: warkop, alt: 'warkop', badge: 'Episode Baru', top: '10' },
   { img: colony, alt: 'colony', badge: 'Episode Baru', top: null },
   { img: sekawanlimo, alt: 'sekawanlimo', badge: 'Episode Baru', top: null },
@@ -80,9 +90,30 @@ function ProfilePage() {
   const [savedMsg, setSavedMsg] = useState(false)
   const [fotoError, setFotoError] = useState('')
   const [openMenu, setOpenMenu] = useState(null)
+  
+  // State dinamis untuk menampung data Daftar Saya
+  const [listSaya, setListSaya] = useState([])
 
   const isPremium = localStorage.getItem('isPremium') === 'true'
   const premiumPlan = JSON.parse(localStorage.getItem('premiumPlan')) || { label: 'Individual', nominal: 49990 }
+
+  // Ambil data Daftar Saya secara real-time dari localStorage saat halaman dibuka
+  useEffect(() => {
+    const storedList = localStorage.getItem('daftarSaya')
+    if (storedList) {
+      const parsedList = JSON.parse(storedList)
+      // Hubungkan kembali string nama file dengan import asset gambar lokal
+      const mappedList = parsedList.map(item => ({
+        ...item,
+        img: imageMap[item.alt] || item.img 
+      }))
+      setListSaya(mappedList)
+    } else {
+      // Jika localStorage masih kosong, set data bawaan awal
+      setListSaya(defaultDaftarSaya)
+      localStorage.setItem('daftarSaya', JSON.stringify(defaultDaftarSaya))
+    }
+  }, [])
 
   const handleChange = (field) => (e) => setForm(prev => ({ ...prev, [field]: e.target.value }))
 
@@ -194,7 +225,11 @@ function ProfilePage() {
             <Link to="/daftar-saya" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>Lihat Semua</Link>
           </div>
           <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '10px', scrollbarWidth: 'none' }}>
-            {daftarSaya.map(f => <MovieCard key={f.alt} {...f} />)}
+            {listSaya.length > 0 ? (
+              listSaya.map((f, i) => <MovieCard key={f.alt + i} {...f} />)
+            ) : (
+              <p style={{ color: '#666', fontSize: '13px' }}>Belum ada daftar film disimpan.</p>
+            )}
           </div>
         </div>
       </div>
@@ -253,4 +288,4 @@ function ProfilePage() {
   )
 }
 
-export default ProfilePage
+export default ProfilePage;
