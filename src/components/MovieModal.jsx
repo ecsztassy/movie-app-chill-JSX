@@ -16,6 +16,30 @@ function MovieModal({ movie, onClose }) {
 
   if (!movie) return null
 const isPremium = localStorage.getItem('isPremium') === 'true'
+const handleTambahDaftar = () => {
+  const saved = JSON.parse(localStorage.getItem('daftarFilm')) || []
+
+  // cek apakah film sudah ada
+  const sudahAda = saved.find(f => f.title === movie.title)
+
+  if (sudahAda) {
+    alert('Film sudah ada di Daftar Saya')
+    return
+  }
+
+  const newFilm = {
+    id: Date.now(),
+    img: movie.img,
+    alt: movie.title,
+    badge: movie.badge || null,
+    top: movie.top || null,
+  }
+
+  const updated = [...saved, newFilm]
+  localStorage.setItem('daftarFilm', JSON.stringify(updated))
+
+  alert(`"${movie.title}" ditambahkan ke Daftar Saya`)
+}
   return (
     <div
       onClick={onClose}
@@ -74,11 +98,22 @@ const isPremium = localStorage.getItem('isPremium') === 'true'
   >
     Mulai
   </button>
-  <button style={{
-    width: '32px', height: '32px', borderRadius: '50%',
-    background: 'transparent', border: '2px solid #aaa',
-    color: 'white', cursor: 'pointer', fontSize: '16px',
-  }}>+</button>
+  <button
+    onClick={handleTambahDaftar}
+    style={{
+      width: '38px',
+      height: '38px',
+      borderRadius: '50%',
+      background: 'transparent',
+      border: '2px solid #aaa',
+      color: 'white',
+      cursor: 'pointer',
+      fontSize: '18px',
+      fontWeight: 'bold'
+    }}
+  >
+    +
+  </button>
 
   {isPremium && (
     <div style={{
@@ -90,11 +125,6 @@ const isPremium = localStorage.getItem('isPremium') === 'true'
     </div>
   )}
 </div>
-              <button style={{
-                width: '32px', height: '32px', borderRadius: '50%',
-                background: 'transparent', border: '2px solid #aaa',
-                color: 'white', cursor: 'pointer', fontSize: '14px',
-              }}>🔇</button>
             </div>
           </div>
         </div>
