@@ -1,195 +1,351 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useIsMobile } from '../hooks/useIsMobile'
+import logo from '../assets/logo.png'
+import profil from '../assets/profil.jpg'
 
-const recommendations = [
-  { title: 'The Tomorrow War', top: '10' },
-  { title: 'Quantumania', top: '10' },
-  { title: 'Guardians Vol. 3', top: '10' },
+import warkop from '../assets/warkop.jpg'
+import colony from '../assets/Colony.jpg'
+import sekawanlimo from '../assets/sekawanlimo.jpg'
+import harusnyahoror from '../assets/harusnyahoror.jpg'
+import toystory from '../assets/toystory.jpg'
+import furious from '../assets/furiosjpg.jpg'
+import ipar from '../assets/ipar.jpeg'
+import agaklaen from '../assets/agaklaen.jpeg'
+import alas from '../assets/alas.jpg'
+import kairi from '../assets/kairi.jpeg'
+import cell from '../assets/cell.jpeg'
+import gjls from '../assets/gjls.jpg'
+import irit from '../assets/irit.jpg'
+import jumbo from '../assets/jumbo.jpg'
+import sore from '../assets/sore.jpg'
+import ibu from '../assets/ibu.jpg'
+import garuda from '../assets/garuda.jpg'
+import badut from '../assets/badut.jpg'
+import minion from '../assets/minion.jpg'
+import dukun from '../assets/dukun.jpg'
+import barista from '../assets/barista.jpg'
+import batman from '../assets/batman.jpg'
+import clbk from '../assets/clbk.jpg'
+import foufo from '../assets/foufo.jpg'
+import marvel from '../assets/marvel.jpg'
+import moana from '../assets/moana.jpg'
+import petaka from '../assets/petaka.jpg'
+import robin from '../assets/robin.jpg'
+import spiderman from '../assets/spiderman.jpg'
+import superman from '../assets/super.jpg'
+import tanah from '../assets/tanah.jpg'
+import usaha from '../assets/usaha.jpg'
+
+const allFilm = [
+  { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10' },
+  { id: 2, img: colony, alt: 'Colony', badge: 'Episode Baru', top: null },
+  { id: 3, img: sekawanlimo, alt: 'Sekawan Limo', badge: null, top: '10' },
+  { id: 4, img: harusnyahoror, alt: 'Harusnya Horor', badge: 'Episode Baru', top: null },
+  { id: 5, img: toystory, alt: 'Toy Story 5', badge: 'Episode Baru', top: '10' },
+  { id: 6, img: furious, alt: 'The Furious', badge: null, top: '10' },
+  { id: 7, img: ipar, alt: 'Ipar Adalah Maut', badge: null, top: null },
+  { id: 8, img: agaklaen, alt: 'Agak Laen', badge: 'Episode Baru', top: null },
+  { id: 9, img: alas, alt: 'Alas Roban', badge: null, top: null },
+  { id: 10, img: kairi, alt: 'Nobody Loves Kay', badge: null, top: null },
+  { id: 11, img: cell, alt: 'Ghost in the Cell', badge: null, top: '10' },
+  { id: 12, img: gjls, alt: 'GJLS', badge: null, top: null },
+  { id: 13, img: irit, alt: 'Keluarga Super Irit', badge: null, top: null },
+  { id: 14, img: jumbo, alt: 'Jumbo', badge: 'Episode Baru', top: null },
+  { id: 15, img: sore, alt: 'Sore', badge: null, top: null },
+  { id: 16, img: ibu, alt: 'Jangan Buang Ibu', badge: null, top: '10' },
+  { id: 17, img: garuda, alt: 'Garuda di Dadaku', badge: null, top: null },
+  { id: 18, img: badut, alt: 'Badut Gendong', badge: null, top: null },
+  { id: 19, img: minion, alt: 'Minions & Monsters', badge: null, top: null },
+  { id: 20, img: dukun, alt: 'Dukun Magang', badge: null, top: null },
+  { id: 21, img: barista, alt: 'Love Barista', badge: null, top: null },
+  { id: 22, img: batman, alt: 'The Batman', badge: 'Episode Baru', top: '10' },
+  { id: 23, img: clbk, alt: 'Cinta Lama Belum Kelar', badge: null, top: null },
+  { id: 24, img: foufo, alt: 'FOUFO', badge: 'Episode Baru', top: null },
+  { id: 25, img: marvel, alt: 'Avengers Endgame', badge: null, top: '10' },
+  { id: 26, img: moana, alt: 'Moana', badge: null, top: null },
+  { id: 27, img: petaka, alt: 'Petaka Gunung Gede', badge: null, top: '10' },
+  { id: 28, img: robin, alt: 'Robin Hood', badge: null, top: null },
+  { id: 29, img: spiderman, alt: 'Spider-Man No Way Home', badge: 'Episode Baru', top: '10' },
+  { id: 30, img: superman, alt: 'Superman Legacy', badge: null, top: '10' },
+  { id: 31, img: tanah, alt: 'Tanah Air Beta', badge: null, top: null },
+  { id: 32, img: usaha, alt: 'Usaha Belum Selesai', badge: 'Episode Baru', top: null },
 ]
 
-function MovieModal({ movie, onClose }) {
-  const navigate = useNavigate()
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = 'auto' }
-  }, [])
+const initialDaftar = [
+  { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10' },
+  { id: 2, img: colony, alt: 'Colony', badge: 'Episode Baru', top: null },
+  { id: 3, img: sekawanlimo, alt: 'Sekawan Limo', badge: null, top: '10' },
+  { id: 5, img: toystory, alt: 'Toy Story 5', badge: 'Episode Baru', top: '10' },
+  { id: 6, img: furious, alt: 'The Furious', badge: null, top: '10' },
+]
 
-  if (!movie) return null
-const isPremium = localStorage.getItem('isPremium') === 'true'
-const handleTambahDaftar = () => {
-  const saved = JSON.parse(localStorage.getItem('daftarFilm')) || []
-
-  // cek apakah film sudah ada
-  const sudahAda = saved.find(f => f.title === movie.title)
-
-  if (sudahAda) {
-    alert('Film sudah ada di Daftar Saya')
-    return
-  }
-
-  const newFilm = {
-    id: Date.now(),
-    img: movie.img,
-    alt: movie.title,
-    badge: movie.badge || null,
-    top: movie.top || null,
-  }
-
-  const updated = [...saved, newFilm]
-  localStorage.setItem('daftarFilm', JSON.stringify(updated))
-
-  alert(`"${movie.title}" ditambahkan ke Daftar Saya`)
+// Simpan & load dari localStorage (tanpa img karena tidak bisa di-JSON)
+const saveDaftar = (daftar) => {
+  const data = daftar.map(f => ({ id: f.id, alt: f.alt, badge: f.badge, top: f.top }))
+  localStorage.setItem('daftarFilm', JSON.stringify(data))
 }
+
+const loadDaftar = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('daftarFilm'))
+
+    if (!saved) return initialDaftar
+
+    return saved.map(s => {
+      const match = allFilm.find(f => f.id === s.id)
+
+      if (match) return match
+
+      // fallback kalau id tidak ada
+      return allFilm.find(f => f.alt === s.alt)
+    }).filter(Boolean)
+
+  } catch {
+    return initialDaftar
+  }
+}
+
+function Header({ onLogout }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const isMobile = useIsMobile()
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.75)',
-        zIndex: 1000,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        overflowY: 'auto',
-        padding: '40px 0',
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          width: '90%',
-          maxWidth: '600px',
-          background: '#181818',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        {/* Hero Image */}
-        <div style={{
-          height: '320px',
-          background: `linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(24,24,24,1)), url(${movie.img})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center top',
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'flex-end',
-          padding: '20px',
-        }}>
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute', top: '12px', right: '12px',
-              width: '32px', height: '32px', borderRadius: '50%',
-              background: '#181818', border: 'none',
-              color: 'white', fontSize: '16px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >✕</button>
+    <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 15px' : '18px 40px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '30px' }}>
+        <Link to="/home"><img src={logo} alt="Logo Chill" style={{ width: isMobile ? '70px' : '100px' }} /></Link>
+        {!isMobile && (
+          <nav style={{ display: 'flex', gap: '20px' }}>
+            <Link to="/series" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Series</Link>
+            <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Film</Link>
+            <Link to="/daftar-saya" style={{ color: 'white', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>Daftar Saya</Link>
+          </nav>
+        )}
+      </div>
+      <div style={{ position: 'relative' }}>
+        <div onClick={() => setDropdownOpen(p => !p)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <img src={profil} alt="profile" style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', borderRadius: '50%', objectFit: 'cover' }} />
+          <span style={{ color: '#aaa', fontSize: '12px' }}>▼</span>
+        </div>
+        {dropdownOpen && (
+          <div style={{ position: 'absolute', top: '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
+            <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤 Profil Saya</Link>
+            <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐ Ubah Premium</Link>
+            <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️ Logout</a>
+          </div>
+        )}
+      </div>
+    </header>
+  )
+}
 
-          <div style={{ width: '100%' }}>
-            <h2 style={{ color: 'white', fontSize: '24px', marginBottom: '12px' }}>{movie.title}</h2>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-  <button
-    onClick={() => navigate('/watch', { state: { movie: { title: movie.title, img: movie.img } } })}
-    style={{ background: '#2d7ef7', border: 'none', padding: '8px 20px', color: 'white', borderRadius: '20px', cursor: 'pointer', fontSize: '14px' }}
-  >
-    Mulai
-  </button>
-  <button
-    onClick={handleTambahDaftar}
-    style={{
-      width: '38px',
-      height: '38px',
-      borderRadius: '50%',
-      background: 'transparent',
-      border: '2px solid #aaa',
-      color: 'white',
-      cursor: 'pointer',
-      fontSize: '18px',
-      fontWeight: 'bold'
-    }}
-  >
-    +
-  </button>
+function DaftarSayaPage() {
+  const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
-  {isPremium && (
-    <div style={{
-      background: 'linear-gradient(135deg, #f5a623, #f7c948)',
-      borderRadius: '20px', padding: '4px 12px',
-      fontSize: '12px', fontWeight: 'bold', color: '#1a1a1a',
-    }}>
-      Premium
-    </div>
-  )}
-</div>
-            </div>
+  const [daftarFilm, setDaftarFilm] = useState(loadDaftar)
+  const [showTambah, setShowTambah] = useState(false)
+  const [editId, setEditId] = useState(null)
+  const [editAlt, setEditAlt] = useState('')
+  const [notif, setNotif] = useState('')
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState(null)
+  const [selectedIds, setSelectedIds] = useState([])
+  const [modeEdit, setModeEdit] = useState(false)
+
+  // Simpan ke localStorage setiap kali daftarFilm berubah
+  useEffect(() => {
+    saveDaftar(daftarFilm)
+  }, [daftarFilm])
+
+  const tampilNotif = (pesan) => {
+    setNotif(pesan)
+    setTimeout(() => setNotif(''), 2500)
+  }
+
+  // CREATE
+  const handleTambah = (film) => {
+    if (daftarFilm.find(f => f.id === film.id)) {
+      tampilNotif('⚠️ Film sudah ada di daftar!')
+      return
+    }
+    setDaftarFilm(prev => [...prev, { ...film }])
+    tampilNotif(`✅ "${film.alt}" berhasil ditambahkan!`)
+    setShowTambah(false)
+  }
+
+  // UPDATE
+  const handleSimpanEdit = (id) => {
+    setDaftarFilm(prev => prev.map(f => f.id === id ? { ...f, alt: editAlt } : f))
+    setEditId(null)
+    tampilNotif('✅ Judul berhasil diperbarui!')
+  }
+
+  // DELETE satu
+  const handleHapus = (id) => {
+    const film = daftarFilm.find(f => f.id === id)
+    setDaftarFilm(prev => prev.filter(f => f.id !== id))
+    setKonfirmasiHapus(null)
+    tampilNotif(`🗑️ "${film.alt}" dihapus.`)
+  }
+
+  // DELETE selected
+  const handleHapusSelected = () => {
+    setDaftarFilm(prev => prev.filter(f => !selectedIds.includes(f.id)))
+    tampilNotif(`🗑️ ${selectedIds.length} film dihapus.`)
+    setSelectedIds([])
+    setModeEdit(false)
+  }
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
+  }
+
+  const btnStyle = (color, textColor = 'white') => ({
+    background: color, border: 'none', color: textColor,
+    padding: isMobile ? '8px 12px' : '10px 16px',
+    borderRadius: '8px', cursor: 'pointer',
+    fontSize: isMobile ? '12px' : '13px', fontWeight: 'bold',
+  })
+
+  return (
+    <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
+      <Header onLogout={() => { localStorage.removeItem('isPremium'); localStorage.removeItem('premiumPlan'); navigate('/login') }} />
+
+      <div style={{ padding: isMobile ? '20px 15px' : '40px' }}>
+        {notif && (
+          <div style={{ background: '#2a2a2a', border: '1px solid #444', color: 'white', padding: '12px 20px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
+            {notif}
+          </div>
+        )}
+
+        {/* Header + Tombol CRUD */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '10px' }}>
+          <h1 style={{ fontSize: isMobile ? '20px' : '28px' }}>Daftar Saya</h1>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {/* CREATE */}
+            <button onClick={() => setShowTambah(true)} style={btnStyle('#E50914')}>
+              + Tambah
+            </button>
+
+            {/* UPDATE mode */}
+            <button
+              onClick={() => { setModeEdit(p => !p); setSelectedIds([]) }}
+              style={btnStyle(modeEdit ? '#555' : '#2d7ef7')}
+            >
+              {modeEdit ? 'Batal Edit' : '✏️ Edit'}
+            </button>
+
+            {/* DELETE selected */}
+            {modeEdit && selectedIds.length > 0 && (
+              <button onClick={handleHapusSelected} style={btnStyle('#E50914')}>
+                🗑️ Hapus ({selectedIds.length})
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Detail Content */}
-        <div style={{ padding: '20px', color: 'white' }}>
-          {/* Meta info */}
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ color: '#aaa', fontSize: '13px' }}>{movie.year || '2023'}</span>
-            <span style={{ color: '#aaa', fontSize: '13px' }}>{movie.duration || '2j 29m'}</span>
-            <span style={{
-              border: '1px solid #aaa', color: '#aaa',
-              fontSize: '11px', padding: '1px 6px', borderRadius: '3px',
-            }}>{movie.rating || 'PG-13'}</span>
+        {modeEdit && (
+          <div style={{ background: '#2a2a2a', borderRadius: '8px', padding: '10px 16px', marginBottom: '16px', fontSize: '12px', color: '#aaa' }}>
+            Mode edit aktif — klik film untuk pilih, lalu hapus. Atau klik judul film untuk ubah nama.
           </div>
+        )}
 
-          <div style={{ display: 'flex', gap: '30px' }}>
-            {/* Kiri - Deskripsi */}
-            <div style={{ flex: 2 }}>
-              <p style={{ color: '#ccc', fontSize: '13px', lineHeight: '1.6' }}>
-                {movie.description || 'Deskripsi film tidak tersedia.'}
-              </p>
-            </div>
-
-            {/* Kanan - Info */}
-            <div style={{ flex: 1, fontSize: '13px' }}>
-              <div style={{ marginBottom: '8px' }}>
-                <span style={{ color: '#888' }}>Cast : </span>
-                <span style={{ color: '#ccc' }}>{movie.cast || 'Tidak tersedia'}</span>
-              </div>
-              <div style={{ marginBottom: '8px' }}>
-                <span style={{ color: '#888' }}>Genre : </span>
-                <span style={{ color: '#ccc' }}>{movie.genre || 'Tidak tersedia'}</span>
-              </div>
-              <div>
-                <span style={{ color: '#888' }}>Pembuat Film : </span>
-                <span style={{ color: '#ccc' }}>{movie.director || 'Tidak tersedia'}</span>
-              </div>
-            </div>
+        {/* READ - Grid */}
+        {daftarFilm.length === 0 ? (
+          <div style={{ textAlign: 'center', color: '#aaa', padding: '60px 0', fontSize: '16px' }}>
+            Daftar kamu kosong. Tambahkan film dulu!
           </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(160px, 1fr))', gap: isMobile ? '10px' : '16px' }}>
+            {daftarFilm.map(film => (
+              <div
+                key={film.id}
+                onClick={() => modeEdit && toggleSelect(film.id)}
+                style={{
+                  position: 'relative', borderRadius: '8px', overflow: 'hidden',
+                  background: '#222', cursor: modeEdit ? 'pointer' : 'default',
+                  border: selectedIds.includes(film.id) ? '2px solid #E50914' : '2px solid transparent',
+                  transition: '0.2s',
+                }}
+              >
+                {/* Checkbox di mode edit */}
+                {modeEdit && (
+                  <div style={{
+                    position: 'absolute', top: '8px', left: '8px', zIndex: 10,
+                    width: '20px', height: '20px', borderRadius: '50%',
+                    background: selectedIds.includes(film.id) ? '#E50914' : 'rgba(0,0,0,0.6)',
+                    border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '11px', color: 'white',
+                  }}>
+                    {selectedIds.includes(film.id) ? '✓' : ''}
+                  </div>
+                )}
 
-          {/* Rekomendasi */}
-          <div style={{ marginTop: '24px' }}>
-            <h3 style={{ fontSize: '16px', marginBottom: '14px' }}>Rekomendasi Serupa</h3>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              {(movie.recommendations || []).map((rec, i) => (
-                <div key={i} style={{ flex: 1, borderRadius: '6px', overflow: 'hidden', position: 'relative', aspectRatio: '2/3', cursor: 'pointer' }}>
-                  <img src={rec.img} alt={rec.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  {rec.top && (
-                    <div style={{
-                      position: 'absolute', top: '6px', right: '6px',
-                      background: '#E50914', color: 'white',
-                      fontSize: '9px', fontWeight: 'bold',
-                      padding: '2px 5px', borderRadius: '3px',
-                      textAlign: 'center', lineHeight: '1.3',
-                    }}>Top<br />{rec.top}</div>
+                <div style={{ aspectRatio: '2/3', position: 'relative' }}>
+                  <img src={film.img} alt={film.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {film.badge && !modeEdit && <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px' }}>{film.badge}</div>}
+                  {film.top && <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px', textAlign: 'center', lineHeight: '1.3' }}>Top<br />{film.top}</div>}
+                </div>
+
+                <div style={{ padding: '8px' }}>
+                  {/* UPDATE - edit judul */}
+                  {editId === film.id ? (
+                    <div onClick={e => e.stopPropagation()}>
+                      <input
+                        value={editAlt}
+                        onChange={e => setEditAlt(e.target.value)}
+                        autoFocus
+                        style={{ width: '100%', background: '#333', border: '1px solid #555', borderRadius: '4px', color: 'white', padding: '4px 8px', fontSize: '11px', outline: 'none', marginBottom: '6px', boxSizing: 'border-box' }}
+                      />
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button onClick={() => handleSimpanEdit(film.id)} style={{ flex: 1, background: '#2d7ef7', border: 'none', color: 'white', borderRadius: '4px', padding: '4px', fontSize: '10px', cursor: 'pointer' }}>Simpan</button>
+                        <button onClick={() => setEditId(null)} style={{ flex: 1, background: '#444', border: 'none', color: 'white', borderRadius: '4px', padding: '4px', fontSize: '10px', cursor: 'pointer' }}>Batal</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={e => {
+                        if (!modeEdit) return
+                        e.stopPropagation()
+                        setEditId(film.id)
+                        setEditAlt(film.alt)
+                      }}
+                      style={{ fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold', color: 'white', cursor: modeEdit ? 'text' : 'default' }}
+                    >
+                      {film.alt}
+                      {modeEdit && <span style={{ color: '#aaa', fontSize: '9px', marginLeft: '4px' }}>✏️</span>}
+                    </div>
                   )}
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modal Tambah */}
+      {showTambah && (
+        <div onClick={() => setShowTambah(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#1a1a1a', borderRadius: '12px', padding: isMobile ? '16px' : '24px', width: '100%', maxWidth: '700px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ fontSize: isMobile ? '15px' : '18px' }}>Tambah Film ke Daftar</h2>
+              <button onClick={() => setShowTambah(false)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(auto-fill, minmax(120px, 1fr))', gap: '10px' }}>
+              {allFilm.map(film => {
+                const sudahAda = daftarFilm.find(f => f.id === film.id)
+                return (
+                  <div key={film.id} onClick={() => !sudahAda && handleTambah(film)} style={{ borderRadius: '8px', overflow: 'hidden', cursor: sudahAda ? 'not-allowed' : 'pointer', opacity: sudahAda ? 0.4 : 1 }}>
+                    <img src={film.img} alt={film.alt} style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', display: 'block' }} />
+                    <div style={{ padding: '6px', background: '#222', fontSize: '9px', textAlign: 'center' }}>{sudahAda ? '✓ Sudah ada' : film.alt}</div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
 
-export default MovieModal
+export default DaftarSayaPage
