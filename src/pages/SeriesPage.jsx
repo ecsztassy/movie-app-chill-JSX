@@ -16,58 +16,75 @@ import spiderman from '../assets/spiderman.jpg'
 import superman from '../assets/super.jpg'
 import tanah from '../assets/tanah.jpg'
 import usaha from '../assets/usaha.jpg'
-
+import MovieModal from '../components/MovieModal'
 
 const seriesList = [
-  { img: colony, alt: 'colony', badge: 'Episode Baru', top: null },
-  { img: sekawanlimo, alt: 'sekawanlimo', badge: null, top: '10' },
-  { img: harusnyahoror, alt: 'harusnyahoror', badge: 'Episode Baru', top: null },
-  { img: ipar, alt: 'ipar', badge: 'Episode Baru', top: null },
-  { img: agaklaen, alt: 'agaklaen', badge: null, top: '10' },
-  { img: kairi, alt: 'kairi', badge: null, top: null },
-  { img: gjls, alt: 'gjls', badge: 'Episode Baru', top: null },
-  { img: sore, alt: 'sore', badge: null, top: '10' },
-  { img: petaka, alt: 'petaka', badge: null, top: null },
-  { img: robin, alt: 'robin', badge: null, top: '10' },
-  { img: spiderman, alt: 'spiderman', badge: null, top: '10' },
-  { img: superman, alt: 'superman', badge: 'Episode Baru', top: null },
-  { img: tanah, alt: 'tanah', badge: null, top: null },
-  { img: usaha, alt: 'usaha', badge: null, top: null },
+  { id: 1, img: colony, alt: 'Colony', badge: 'Episode Baru', top: null, year: '2021', duration: '1j 52m', rating: '18+', description: 'Sebuah koloni manusia berjuang untuk bertahan hidup di planet asing yang keras.', cast: 'Nora Arnezeder, Iain Glen', genre: 'Fiksi Ilmiah, Drama', director: 'Tim Fehlbaum' },
+  { id: 2, img: sekawanlimo, alt: 'Sekawan Limo', badge: null, top: '10', year: '2024', duration: '2j 5m', rating: '13+', description: 'Lima sahabat nekat mendaki gunung angker demi konten viral.', cast: 'Endy Arfian, Bimasena', genre: 'Horor, Thriller', director: 'Bayu Skak' },
+  { id: 3, img: harusnyahoror, alt: 'Harusnya Horor', badge: 'Episode Baru', top: null, year: '2023', duration: '1j 45m', rating: '13+', description: 'Sebuah film horor yang mengocok perut.', cast: 'Aci Resti, Dimas Anggara', genre: 'Komedi, Horor', director: 'Muhadkly Acho' },
+  { id: 4, img: ipar, alt: 'Ipar Adalah Maut', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 50m', rating: '17+', description: 'Drama pernikahan yang mengangkat isu perselingkuhan dalam keluarga.', cast: 'Adipati Dolken, Della Dartyan', genre: 'Drama, Romansa', director: 'Hanung Bramantyo' },
+  { id: 5, img: agaklaen, alt: 'Agak Laen', badge: null, top: '10', year: '2024', duration: '1j 44m', rating: '13+', description: 'Empat penjaga rumah hantu berusaha membuat wahana mereka viral.', cast: 'Bene Dion, Muhadkly Acho', genre: 'Komedi', director: 'Muhadkly Acho' },
+  { id: 6, img: kairi, alt: 'Nobody Loves Kay', badge: null, top: null, year: '2024', duration: '1j 52m', rating: '13+', description: 'Kay adalah gadis muda yang merasa tidak dicintai siapapun.', cast: 'Beby Tsabina, Refal Hady', genre: 'Drama, Romansa', director: 'Riri Riza' },
+  { id: 7, img: gjls, alt: 'GJLS', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 42m', rating: '13+', description: 'Kisah cinta penuh drama dan tawa dari empat sahabat.', cast: 'Raditya Dika, Arawinda Kirana', genre: 'Komedi, Romansa', director: 'Raditya Dika' },
+  { id: 8, img: sore, alt: 'Sore', badge: null, top: '10', year: '2024', duration: '2j 10m', rating: '13+', description: 'Sore adalah istri dari masa depan yang kembali ke masa lalu.', cast: 'Sheila Dara, Dion Wiyoko', genre: 'Romansa, Drama', director: 'Yandy Laurens' },
+  { id: 9, img: petaka, alt: 'Petaka Gunung Gede', badge: null, top: null, year: '2024', duration: '1j 46m', rating: '17+', description: 'Pendakian berubah menjadi teror ketika sekelompok anak muda tersesat.', cast: 'Arbani Yasiz, Kiesha Alvaro', genre: 'Horror', director: 'Azhar Kinoi Lubis' },
+  { id: 10, img: robin, alt: 'Robin Hood', badge: null, top: '10', year: '2018', duration: '1j 56m', rating: '13+', description: 'Robin Hood memimpin pemberontakan melawan korupsi kerajaan.', cast: 'Taron Egerton, Jamie Foxx', genre: 'Action, Adventure', director: 'Otto Bathurst' },
+  { id: 11, img: spiderman, alt: 'Spider-Man No Way Home', badge: null, top: '10', year: '2021', duration: '2j 28m', rating: '13+', description: 'Peter Parker menghadapi kekacauan multiverse.', cast: 'Tom Holland, Zendaya', genre: 'Action, Sci-Fi', director: 'Jon Watts' },
+  { id: 12, img: superman, alt: 'Superman Legacy', badge: 'Episode Baru', top: null, year: '2025', duration: '2j 10m', rating: '13+', description: 'Clark Kent menyeimbangkan kehidupan sebagai jurnalis dan pelindung bumi.', cast: 'David Corenswet, Rachel Brosnahan', genre: 'Action, Superhero', director: 'James Gunn' },
+  { id: 13, img: tanah, alt: 'Tanah Air Beta', badge: null, top: null, year: '2024', duration: '1j 43m', rating: '13+', description: 'Drama keluarga tentang perjuangan bertahan hidup di tengah konflik sosial.', cast: 'Reza Rahadian, Laura Basuki', genre: 'Drama', director: 'Hanung Bramantyo' },
+  { id: 14, img: usaha, alt: 'Usaha Belum Selesai', badge: null, top: null, year: '2024', duration: '1j 38m', rating: '13+', description: 'Seorang pemuda membangun bisnis dari nol sambil menghadapi tekanan keluarga.', cast: 'Iqbaal Ramadhan, Shenina Cinnamon', genre: 'Drama', director: 'Yandy Laurens' },
 ]
 
-function MovieCard({ img, alt, badge, top }) {
+const getRandomRecommendations = (currentAlt, count = 3) => {
+  const filtered = seriesList.filter(m => m.alt !== currentAlt)
+  const shuffled = [...filtered].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count).map((m, i) => ({ img: m.img, title: m.alt, top: i % 2 === 0 ? '10' : null }))
+}
+
+function MovieCard({ movie, onSelect }) {
   const [hovered, setHovered] = useState(false)
+  const navigate = useNavigate()
+
+  const handlePlay = (e) => {
+    e.stopPropagation()
+    navigate('/watch', { state: { movie: { title: movie.alt, img: movie.img } } })
+  }
+
+  const handleAddToList = (e) => {
+    e.stopPropagation()
+    const daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
+    const alreadyExist = daftarFilm.find(item => item.alt === movie.alt)
+    if (alreadyExist) { alert('⚠️ Film sudah ada di Daftar Saya'); return }
+    daftarFilm.push({ id: movie.id || Date.now(), alt: movie.alt, badge: movie.badge || null, top: movie.top || null })
+    localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
+    alert(`✅ "${movie.alt}" ditambahkan ke Daftar Saya`)
+  }
+
+  const handleDetail = (e) => {
+    e.stopPropagation()
+    onSelect({ img: movie.img, title: movie.alt, year: movie.year, duration: movie.duration, rating: movie.rating, description: movie.description, cast: movie.cast, genre: movie.genre, director: movie.director, recommendations: getRandomRecommendations(movie.alt) })
+  }
+
   return (
     <div
+      onClick={() => onSelect({ img: movie.img, title: movie.alt, year: movie.year, duration: movie.duration, rating: movie.rating, description: movie.description, cast: movie.cast, genre: movie.genre, director: movie.director, recommendations: getRandomRecommendations(movie.alt) })}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        borderRadius: '8px', cursor: 'pointer', position: 'relative',
-        transform: hovered ? 'scale(1.05)' : 'scale(1)',
-        transition: '0.3s ease', zIndex: hovered ? 10 : 1, aspectRatio: '2/3',
-      }}
+      style={{ borderRadius: '8px', cursor: 'pointer', position: 'relative', aspectRatio: '2/3', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: '0.3s ease', zIndex: hovered ? 10 : 1 }}
     >
-      <img src={img} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
-      {badge && (
-        <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px' }}>
-          {badge}
-        </div>
-      )}
-      {top && (
-        <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px', textAlign: 'center', lineHeight: '1.3' }}>
-          Top<br />{top}
-        </div>
-      )}
+      <img src={movie.img} alt={movie.alt} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
+      {movie.badge && <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px' }}>{movie.badge}</div>}
+      {movie.top && <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px', textAlign: 'center', lineHeight: '1.3' }}>Top<br />{movie.top}</div>}
       {hovered && (
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(transparent 40%, rgba(0,0,0,0.9))', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '10px' }}>
           <div style={{ display: 'flex', gap: '6px', marginBottom: '6px' }}>
-            <button style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'white', border: 'none', cursor: 'pointer', fontSize: '12px' }}>▶</button>
-            <button style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'transparent', border: '2px solid #aaa', color: 'white', cursor: 'pointer', fontSize: '13px' }}>✓</button>
-            <button style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'transparent', border: '2px solid #aaa', color: 'white', cursor: 'pointer', fontSize: '13px' }}>∨</button>
+            <button onClick={handlePlay} style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'white', border: 'none', cursor: 'pointer', fontSize: '12px' }}>▶</button>
+            <button onClick={handleAddToList} style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'transparent', border: '2px solid #aaa', color: 'white', cursor: 'pointer', fontSize: '13px' }}>✓</button>
+            <button onClick={handleDetail} style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'transparent', border: '2px solid #aaa', color: 'white', cursor: 'pointer', fontSize: '13px' }}>∨</button>
           </div>
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ background: '#555', color: 'white', fontSize: '9px', padding: '1px 5px', borderRadius: '3px' }}>13+</span>
-            <span style={{ color: '#ccc', fontSize: '10px' }}>Drama • Misteri</span>
+            <span style={{ background: '#555', color: 'white', fontSize: '9px', padding: '1px 5px', borderRadius: '3px' }}>{movie.rating}</span>
+            <span style={{ color: '#ccc', fontSize: '10px' }}>{movie.genre}</span>
           </div>
         </div>
       )}
@@ -94,9 +111,9 @@ function Header({ onLogout }) {
         </div>
         {dropdownOpen && (
           <div style={{ position: 'absolute', top: '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
-            <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤Profil Saya</Link>
-            <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐Ubah Premium</Link>
-            <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️Logout</a>
+            <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤 Profil Saya</Link>
+            <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐ Ubah Premium</Link>
+            <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️ Logout</a>
           </div>
         )}
       </div>
@@ -106,19 +123,18 @@ function Header({ onLogout }) {
 
 function SeriesPage() {
   const navigate = useNavigate()
+  const [selectedMovie, setSelectedMovie] = useState(null)
+
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
-      <Header onLogout={() => {
-  localStorage.removeItem('isPremium')
-localStorage.removeItem('premiumPlan')
-  navigate('/login')
-}} />
+      <Header onLogout={() => { localStorage.removeItem('isPremium'); localStorage.removeItem('premiumPlan'); navigate('/login') }} />
       <div style={{ padding: '40px' }}>
         <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>Series</h1>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
-          {seriesList.map(f => <MovieCard key={f.alt} {...f} />)}
+          {seriesList.map(f => <MovieCard key={f.id} movie={f} onSelect={setSelectedMovie} />)}
         </div>
       </div>
+      {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
     </div>
   )
 }
