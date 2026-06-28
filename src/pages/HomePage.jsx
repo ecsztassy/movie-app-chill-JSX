@@ -129,23 +129,22 @@ const handlePlay = (e) => {
 
 const handleAddToList = (e) => {
   e.stopPropagation()
-
-  let daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
-
+  const daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
   const alreadyExist = daftarFilm.find(item => item.alt === movie.alt)
 
-  if (!alreadyExist) {
-    daftarFilm.push({
-      id: movie.id,        // wajib ada
-      alt: movie.alt,
-      badge: null,
-      top: null
-    })
-
-    localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
+  if (alreadyExist) {
+    alert('⚠️ Film sudah ada di Daftar Saya')
+    return
   }
 
-  navigate('/daftar-saya')
+  daftarFilm.push({
+    id: movie.id || Date.now(),
+    alt: movie.alt,
+    badge: movie.badge || null,
+    top: movie.top || null,
+  })
+  localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
+  alert(`✅ "${movie.alt}" ditambahkan ke Daftar Saya`)
 }
 
 const handleDetail = (e) => {
@@ -437,6 +436,7 @@ function Hero({ onSelect }) {
 
   
   const movieData = {
+    id: 33,
     img: bgHero,
     title: '365 DAYS',
     year: '2020',
