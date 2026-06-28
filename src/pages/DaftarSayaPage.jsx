@@ -4,6 +4,9 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 
+// Import Feather Icons
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi'
+
 import warkop from '../assets/warkop.jpg'
 import colony from '../assets/Colony.jpg'
 import sekawanlimo from '../assets/sekawanlimo.jpg'
@@ -36,6 +39,7 @@ import spiderman from '../assets/spiderman.jpg'
 import superman from '../assets/super.jpg'
 import tanah from '../assets/tanah.jpg'
 import usaha from '../assets/usaha.jpg'
+import bgHero from '../assets/images.jpg'
 
 const allFilm = [
   { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10' },
@@ -70,6 +74,7 @@ const allFilm = [
   { id: 30, img: superman, alt: 'Superman Legacy', badge: null, top: '10' },
   { id: 31, img: tanah, alt: 'Tanah Air Beta', badge: null, top: null },
   { id: 32, img: usaha, alt: 'Usaha Belum Selesai', badge: 'Episode Baru', top: null },
+  { id: 33, img: bgHero, alt: '365 DAYS', badge: null, top: null },
 ]
 
 const initialDaftar = [
@@ -80,7 +85,6 @@ const initialDaftar = [
   { id: 6, img: furious, alt: 'The Furious', badge: null, top: '10' },
 ]
 
-// Simpan & load dari localStorage (tanpa img karena tidak bisa di-JSON)
 const saveDaftar = (daftar) => {
   const data = daftar.map(f => ({ id: f.id, alt: f.alt, badge: f.badge, top: f.top }))
   localStorage.setItem('daftarFilm', JSON.stringify(data))
@@ -89,18 +93,11 @@ const saveDaftar = (daftar) => {
 const loadDaftar = () => {
   try {
     const saved = JSON.parse(localStorage.getItem('daftarFilm'))
-
     if (!saved) return initialDaftar
-
     return saved.map(s => {
-      const match = allFilm.find(f => f.id === s.id)
-
-      if (match) return match
-
-      // fallback kalau id tidak ada
-      return allFilm.find(f => f.alt === s.alt)
+      const match = allFilm.find(f => f.id === s.id) || allFilm.find(f => f.alt === s.alt)
+      return match ? { ...match } : null
     }).filter(Boolean)
-
   } catch {
     return initialDaftar
   }
@@ -147,11 +144,9 @@ function DaftarSayaPage() {
   const [editId, setEditId] = useState(null)
   const [editAlt, setEditAlt] = useState('')
   const [notif, setNotif] = useState('')
-  const [konfirmasiHapus, setKonfirmasiHapus] = useState(null)
   const [selectedIds, setSelectedIds] = useState([])
   const [modeEdit, setModeEdit] = useState(false)
 
-  // Simpan ke localStorage setiap kali daftarFilm berubah
   useEffect(() => {
     saveDaftar(daftarFilm)
   }, [daftarFilm])
@@ -161,9 +156,8 @@ function DaftarSayaPage() {
     setTimeout(() => setNotif(''), 2500)
   }
 
-  // CREATE
   const handleTambah = (film) => {
-    if (daftarFilm.find(f => f.id === film.id)) {
+    if (daftarFilm.find(f => f.alt === film.alt)) {
       tampilNotif('⚠️ Film sudah ada di daftar!')
       return
     }
@@ -172,25 +166,26 @@ function DaftarSayaPage() {
     setShowTambah(false)
   }
 
-  // UPDATE
   const handleSimpanEdit = (id) => {
+    if (!editAlt.trim()) {
+      tampilNotif('⚠️ Judul film tidak boleh kosong!')
+      return
+    }
+    
+    const yakinEdit = window.confirm(`Apakah Anda yakin ingin mengubah judul film ini menjadi "${editAlt}"?`)
+    if (!yakinEdit) return
+
     setDaftarFilm(prev => prev.map(f => f.id === id ? { ...f, alt: editAlt } : f))
     setEditId(null)
     tampilNotif('✅ Judul berhasil diperbarui!')
   }
 
-  // DELETE satu
-  const handleHapus = (id) => {
-    const film = daftarFilm.find(f => f.id === id)
-    setDaftarFilm(prev => prev.filter(f => f.id !== id))
-    setKonfirmasiHapus(null)
-    tampilNotif(`🗑️ "${film.alt}" dihapus.`)
-  }
-
-  // DELETE selected
   const handleHapusSelected = () => {
+    const yakinHapus = window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} film terpilih dari daftar tontonan Anda?`)
+    if (!yakinHapus) return
+
     setDaftarFilm(prev => prev.filter(f => !selectedIds.includes(f.id)))
-    tampilNotif(`🗑️ ${selectedIds.length} film dihapus.`)
+    tampilNotif(`🗑️ ${selectedIds.length} film berhasil dihapus.`)
     setSelectedIds([])
     setModeEdit(false)
   }
@@ -199,11 +194,13 @@ function DaftarSayaPage() {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
   }
 
-  const btnStyle = (color, textColor = 'white') => ({
-    background: color, border: 'none', color: textColor,
-    padding: isMobile ? '8px 12px' : '10px 16px',
+  const btnStyle = (color) => ({
+    background: color, border: 'none', color: 'white',
+    padding: isMobile ? '8px 14px' : '10px 18px',
     borderRadius: '8px', cursor: 'pointer',
     fontSize: isMobile ? '12px' : '13px', fontWeight: 'bold',
+    display: 'flex', alignItems: 'center', gap: '8px',
+    transition: '0.2s opacity',
   })
 
   return (
@@ -217,27 +214,18 @@ function DaftarSayaPage() {
           </div>
         )}
 
-        {/* Header + Tombol CRUD */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '10px' }}>
           <h1 style={{ fontSize: isMobile ? '20px' : '28px' }}>Daftar Saya</h1>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {/* CREATE */}
             <button onClick={() => setShowTambah(true)} style={btnStyle('#E50914')}>
-              + Tambah
+              <FiPlus size={16} /> 
             </button>
-
-            {/* UPDATE mode */}
-            <button
-              onClick={() => { setModeEdit(p => !p); setSelectedIds([]) }}
-              style={btnStyle(modeEdit ? '#555' : '#2d7ef7')}
-            >
-              {modeEdit ? 'Batal Edit' : '✏️ Edit'}
+            <button onClick={() => { setModeEdit(p => !p); setSelectedIds([]) }} style={btnStyle(modeEdit ? '#555' : '#2d7ef7')}>
+              <FiEdit2 size={14} /> {modeEdit ? 'Batal ' : ''}
             </button>
-
-            {/* DELETE selected */}
             {modeEdit && selectedIds.length > 0 && (
               <button onClick={handleHapusSelected} style={btnStyle('#E50914')}>
-                🗑️ Hapus ({selectedIds.length})
+                <FiTrash2 size={14} /> Hapus ({selectedIds.length})
               </button>
             )}
           </div>
@@ -245,11 +233,10 @@ function DaftarSayaPage() {
 
         {modeEdit && (
           <div style={{ background: '#2a2a2a', borderRadius: '8px', padding: '10px 16px', marginBottom: '16px', fontSize: '12px', color: '#aaa' }}>
-            Mode edit aktif — klik film untuk pilih, lalu hapus. Atau klik judul film untuk ubah nama.
+            Klik Film Untuk Pilih Lalu Hapus. Klik Judul Untuk Ubah Nama.
           </div>
         )}
 
-        {/* READ - Grid */}
         {daftarFilm.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#aaa', padding: '60px 0', fontSize: '16px' }}>
             Daftar kamu kosong. Tambahkan film dulu!
@@ -267,27 +254,33 @@ function DaftarSayaPage() {
                   transition: '0.2s',
                 }}
               >
-                {/* Checkbox di mode edit */}
                 {modeEdit && (
                   <div style={{
                     position: 'absolute', top: '8px', left: '8px', zIndex: 10,
                     width: '20px', height: '20px', borderRadius: '50%',
                     background: selectedIds.includes(film.id) ? '#E50914' : 'rgba(0,0,0,0.6)',
                     border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '11px', color: 'white',
+                    color: 'white',
                   }}>
-                    {selectedIds.includes(film.id) ? '✓' : ''}
+                    {selectedIds.includes(film.id) && <FiCheck size={12} />}
                   </div>
                 )}
 
                 <div style={{ aspectRatio: '2/3', position: 'relative' }}>
                   <img src={film.img} alt={film.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  {film.badge && !modeEdit && <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px' }}>{film.badge}</div>}
-                  {film.top && <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px', textAlign: 'center', lineHeight: '1.3' }}>Top<br />{film.top}</div>}
+                  {film.badge && !modeEdit && (
+                    <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px' }}>
+                      {film.badge}
+                    </div>
+                  )}
+                  {film.top && (
+                    <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#E50914', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '3px', textAlign: 'center', lineHeight: '1.3' }}>
+                      Top<br />{film.top}
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ padding: '8px' }}>
-                  {/* UPDATE - edit judul */}
                   {editId === film.id ? (
                     <div onClick={e => e.stopPropagation()}>
                       <input
@@ -309,10 +302,10 @@ function DaftarSayaPage() {
                         setEditId(film.id)
                         setEditAlt(film.alt)
                       }}
-                      style={{ fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold', color: 'white', cursor: modeEdit ? 'text' : 'default' }}
+                      style={{ fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold', color: 'white', cursor: modeEdit ? 'text' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'between', gap: '4px' }}
                     >
-                      {film.alt}
-                      {modeEdit && <span style={{ color: '#aaa', fontSize: '9px', marginLeft: '4px' }}>✏️</span>}
+                      <span style={{ flex: 1 }}>{film.alt}</span>
+                      {modeEdit && <FiEdit2 size={10} style={{ color: '#aaa' }} />}
                     </div>
                   )}
                 </div>
@@ -328,15 +321,23 @@ function DaftarSayaPage() {
           <div onClick={e => e.stopPropagation()} style={{ background: '#1a1a1a', borderRadius: '12px', padding: isMobile ? '16px' : '24px', width: '100%', maxWidth: '700px', maxHeight: '80vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h2 style={{ fontSize: isMobile ? '15px' : '18px' }}>Tambah Film ke Daftar</h2>
-              <button onClick={() => setShowTambah(false)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setShowTambah(false)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <FiX size={20} />
+              </button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(auto-fill, minmax(120px, 1fr))', gap: '10px' }}>
               {allFilm.map(film => {
-                const sudahAda = daftarFilm.find(f => f.id === film.id)
+                const sudahAda = daftarFilm.find(f => f.alt === film.alt)
                 return (
-                  <div key={film.id} onClick={() => !sudahAda && handleTambah(film)} style={{ borderRadius: '8px', overflow: 'hidden', cursor: sudahAda ? 'not-allowed' : 'pointer', opacity: sudahAda ? 0.4 : 1 }}>
+                  <div key={film.id} onClick={() => !sudahAda && handleTambah(film)} style={{ borderRadius: '8px', overflow: 'hidden', cursor: sudahAda ? 'not-allowed' : 'pointer', opacity: sudahAda ? 0.4 : 1, position: 'relative' }}>
                     <img src={film.img} alt={film.alt} style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', display: 'block' }} />
-                    <div style={{ padding: '6px', background: '#222', fontSize: '9px', textAlign: 'center' }}>{sudahAda ? '✓ Sudah ada' : film.alt}</div>
+                    <div style={{ padding: '6px', background: '#222', fontSize: '9px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                      {sudahAda ? (
+                        <>
+                          <FiCheck size={10} style={{ color: '#2d7ef7' }} /> Sudah ada
+                        </>
+                      ) : film.alt}
+                    </div>
                   </div>
                 )
               })}
