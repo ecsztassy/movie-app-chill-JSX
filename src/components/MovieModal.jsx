@@ -18,27 +18,19 @@ function MovieModal({ movie, onClose }) {
 const isPremium = localStorage.getItem('isPremium') === 'true'
 const handleTambahDaftar = () => {
   const saved = JSON.parse(localStorage.getItem('daftarFilm')) || []
-
-  // cek apakah film sudah ada
-  const sudahAda = saved.find(f => f.title === movie.title)
-
+  const sudahAda = saved.find(f => f.alt === movie.title)
   if (sudahAda) {
-    alert('Film sudah ada di Daftar Saya')
+    alert('⚠️Film sudah ada di Daftar Saya')
     return
   }
-
   const newFilm = {
     id: Date.now(),
-    img: movie.img,
     alt: movie.title,
-    badge: movie.badge || null,
-    top: movie.top || null,
+    badge: null,
+    top: null,
   }
-
-  const updated = [...saved, newFilm]
-  localStorage.setItem('daftarFilm', JSON.stringify(updated))
-
-  alert(`"${movie.title}" ditambahkan ke Daftar Saya`)
+  localStorage.setItem('daftarFilm', JSON.stringify([...saved, newFilm]))
+  alert(`✅"${movie.title}" ditambahkan ke Daftar Saya`)
 }
   return (
     <div
