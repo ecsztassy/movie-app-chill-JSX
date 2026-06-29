@@ -1,37 +1,50 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const recommendations = [
-  { title: 'The Tomorrow War', top: '10' },
-  { title: 'Quantumania', top: '10' },
-  { title: 'Guardians Vol. 3', top: '10' },
-]
+// 1. TAMBAHKAN IMPORT API UNTUK MOCKAPI DI SINI
+import { addDaftar, getDaftar } from '../services/api'
 
 function MovieModal({ movie, onClose }) {
   const navigate = useNavigate()
+  
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = 'auto' }
   }, [])
 
   if (!movie) return null
-const isPremium = localStorage.getItem('isPremium') === 'true'
-const handleTambahDaftar = () => {
-  const saved = JSON.parse(localStorage.getItem('daftarFilm')) || []
-  const sudahAda = saved.find(f => f.alt === movie.title)
-  if (sudahAda) {
-    alert('⚠️Film sudah ada di Daftar Saya')
-    return
+  
+  const isPremium = localStorage.getItem('isPremium') === 'true'
+
+  // 2. UBAH FUNGSI INI: Menggunakan async-await untuk validasi & hit MockAPI
+  const handleTambahDaftar = async () => {
+    try {
+      // Ambil seluruh data dari MockAPI untuk mengecek duplikasi
+      const daftarSaatIni = await getDaftar()
+      
+      // Cek apakah judul film (movie.title) sudah ada di database
+      const sudahAda = daftarSaatIni.find(f => f.alt === movie.title)
+      
+      if (sudahAda) {
+        alert(`⚠️ Film "${movie.title}" sudah ada di Daftar Saya!`)
+        return // Stop di sini, jangan kirim data dobel
+      }
+
+      // Siapkan objek data sesuai dengan skema database kamu
+      const newFilm = {
+        alt: movie.title,
+        badge: movie.badge || "",
+        top: movie.top || "",
+      }
+
+      // Kirim data baru menggunakan Axios ke MockAPI
+      await addDaftar(newFilm)
+      alert(`✅ "${movie.title}" berhasil ditambahkan ke Daftar Saya!`)
+    } catch (error) {
+      console.error("Gagal menambahkan ke Daftar Saya:", error)
+      alert("❌ Gagal memeriksa atau menambahkan film ke server.")
+    }
   }
-  const newFilm = {
-    id: Date.now(),
-    alt: movie.title,
-    badge: null,
-    top: null,
-  }
-  localStorage.setItem('daftarFilm', JSON.stringify([...saved, newFilm]))
-  alert(`✅"${movie.title}" ditambahkan ke Daftar Saya`)
-}
+
   return (
     <div
       onClick={onClose}
@@ -84,39 +97,39 @@ const handleTambahDaftar = () => {
             <h2 style={{ color: 'white', fontSize: '24px', marginBottom: '12px' }}>{movie.title}</h2>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-  <button
-    onClick={() => navigate('/watch', { state: { movie: { title: movie.title, img: movie.img } } })}
-    style={{ background: '#2d7ef7', border: 'none', padding: '8px 20px', color: 'white', borderRadius: '20px', cursor: 'pointer', fontSize: '14px' }}
-  >
-    Mulai
-  </button>
-  <button
-    onClick={handleTambahDaftar}
-    style={{
-      width: '38px',
-      height: '38px',
-      borderRadius: '50%',
-      background: 'transparent',
-      border: '2px solid #aaa',
-      color: 'white',
-      cursor: 'pointer',
-      fontSize: '18px',
-      fontWeight: 'bold'
-    }}
-  >
-    +
-  </button>
+                <button
+                  onClick={() => navigate('/watch', { state: { movie: { title: movie.title, img: movie.img } } })}
+                  style={{ background: '#2d7ef7', border: 'none', padding: '8px 20px', color: 'white', borderRadius: '20px', cursor: 'pointer', fontSize: '14px' }}
+                >
+                  Mulai
+                </button>
+                <button
+                  onClick={handleTambahDaftar}
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    background: 'transparent',
+                    border: '2px solid #aaa',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  +
+                </button>
 
-  {isPremium && (
-    <div style={{
-      background: 'linear-gradient(135deg, #f5a623, #f7c948)',
-      borderRadius: '20px', padding: '4px 12px',
-      fontSize: '12px', fontWeight: 'bold', color: '#1a1a1a',
-    }}>
-      Premium
-    </div>
-  )}
-</div>
+                {isPremium && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #f5a623, #f7c948)',
+                    borderRadius: '20px', padding: '4px 12px',
+                    fontSize: '12px', fontWeight: 'bold', color: '#1a1a1a',
+                  }}>
+                    Premium
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
