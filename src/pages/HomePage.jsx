@@ -1,3 +1,4 @@
+import { addDaftar, getDaftar } from '../services/api'
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
@@ -112,58 +113,65 @@ const getRandomRecommendations = (currentTitle, count = 3) => {
 
 function MovieCard({ img, alt, isMobile, onSelect, movie }) {
   const [hovered, setHovered] = useState(false)
- const navigate = useNavigate()
+  const navigate = useNavigate()
 
-const handlePlay = (e) => {
-  e.stopPropagation()
-
-  navigate('/watch', {
-    state: {
-      movie: {
-        title: movie.alt,
-        img: movie.img
+  const handlePlay = (e) => {
+    e.stopPropagation()
+    navigate('/watch', {
+      state: {
+        movie: {
+          title: movie.alt,
+          img: movie.img
+        }
       }
-    }
-  })
-}
-
-const handleAddToList = (e) => {
-  e.stopPropagation()
-  const daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
-  const alreadyExist = daftarFilm.find(item => item.alt === movie.alt)
-
-  if (alreadyExist) {
-    alert('⚠️ Film sudah ada di Daftar Saya')
-    return
+    })
   }
 
-  daftarFilm.push({
-    id: movie.id || Date.now(),
-    alt: movie.alt,
-    badge: movie.badge || null,
-    top: movie.top || null,
-  })
-  localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
-  alert(`✅ "${movie.alt}" ditambahkan ke Daftar Saya`)
-}
-
-const handleDetail = (e) => {
+const handleAddToList = async (e) => {
   e.stopPropagation()
+  try {
+    // 1. Ambil data terbaru dari MockAPI untuk mengecek duplikasi
+    const daftarSaatIni = await getDaftar()
+    
+    // 2. Cek apakah film dengan judul (alt) yang sama sudah ada di database
+    const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
 
-  onSelect({
-    img: movie.img,
-    title: movie.alt,
-    year: movie.year,
-    duration: movie.duration,
-    rating: movie.rating,
-    description: movie.description,
-    cast: movie.cast,
-    genre: movie.genre,
-    director: movie.director,
+    if (sudahAda) {
+      alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
+      return // Berhentikan proses, jangan kirim POST
+    }
 
-    recommendations: getRandomRecommendations(movie.alt, 3)
-  })
+    // 3. Jika belum ada, baru kirim data ke server
+    const filmData = {
+      alt: movie.alt,
+      badge: movie.badge || "", 
+      top: movie.top || ""
+    }
+
+    await addDaftar(filmData)
+    alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
+  } catch (error) {
+    console.error("Gagal menambahkan film:", error)
+    alert("❌ Gagal memeriksa atau menambahkan film ke server.")
+  }
 }
+
+  const handleDetail = (e) => {
+    e.stopPropagation()
+    onSelect({
+      img: movie.img,
+      title: movie.alt,
+      year: movie.year,
+      duration: movie.duration,
+      rating: movie.rating,
+      description: movie.description,
+      cast: movie.cast,
+      genre: movie.genre,
+      director: movie.director,
+      recommendations: getRandomRecommendations(movie.alt, 3)
+    })
+  }
+
   return (
     <div
       onClick={() => onSelect({
@@ -181,7 +189,6 @@ const handleDetail = (e) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        // Menggunakan aspect-ratio 2/3 di mobile supaya poster utuh sempurna
         width: isMobile ? '110px' : '200px',
         aspectRatio: isMobile ? '2/3' : 'auto', 
         height: isMobile ? 'auto' : '280px', 
@@ -215,47 +222,47 @@ const handleDetail = (e) => {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <button
-  onClick={handlePlay}
-  style={{
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    border: 'none',
-    cursor: 'pointer'
-  }}
->
-  ▶
-</button>
+              onClick={handlePlay}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              ▶
+            </button>
 
-<button
-  onClick={handleAddToList}
-  style={{
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    background: 'transparent',
-    border: '2px solid #aaa',
-    color: 'white',
-    cursor: 'pointer'
-  }}
->
-  ✓
-</button>
+            <button
+              onClick={handleAddToList}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'transparent',
+                border: '2px solid #aaa',
+                color: 'white',
+                cursor: 'pointer'
+              }}
+            >
+              ✓
+            </button>
 
-<button
-  onClick={handleDetail}
-  style={{
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    background: 'transparent',
-    border: '2px solid #aaa',
-    color: 'white',
-    cursor: 'pointer'
-  }}
->
-  ∨
-</button>
+            <button
+              onClick={handleDetail}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'transparent',
+                border: '2px solid #aaa',
+                color: 'white',
+                cursor: 'pointer'
+              }}
+            >
+              ∨
+            </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
             <span style={{ background: '#555', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px' }}>{movie.rating}</span>
