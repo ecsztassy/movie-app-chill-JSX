@@ -4,8 +4,9 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 
-// Import fungsi API call dari services
-import { getDaftar, addDaftar, updateDaftar, deleteDaftar } from '../services/api'
+// SINKRONISASI STEP 4: Menggunakan Hooks & AsyncThunk dari slice kamu
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchDaftar, addFilm, editFilm, hapusFilm } from '../store/redux/daftarSlice'
 
 // Import Feather Icons
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi'
@@ -115,9 +116,11 @@ function Header({ onLogout }) {
 function DaftarSayaPage() {
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  
+  // Ambil state dan dispatch langsung terhubung ke Redux Store buatan Claude
+  const dispatch = useDispatch()
+  const { data: serverData, loading } = useSelector((state) => state.daftar)
 
-  const [daftarFilm, setDaftarFilm] = useState([])
-  const [loading, setLoading] = useState(true)
   const [showTambah, setShowTambah] = useState(false)
   const [editId, setEditId] = useState(null)
   const [editAlt, setEditAlt] = useState('')
@@ -125,58 +128,40 @@ function DaftarSayaPage() {
   const [selectedIds, setSelectedIds] = useState([])
   const [modeEdit, setModeEdit] = useState(false)
 
-  // READ — Ambil data dari MockAPI saat komponen pertama kali di-load
+  // Ambil data dari API via Redux AsyncThunk saat pertama kali render
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const data = await getDaftar()
-        
-        // Memetakan data dari MockAPI dengan gambar lokal berdasarkan alt / judul film
-        const mappedData = data.map(item => {
-          const match = allFilm.find(f => f.alt === item.alt)
-          return match ? { ...match, id: item.id } : { id: item.id, alt: item.alt, badge: item.badge, top: item.top, img: bgHero }
-        })
-        
-        setDaftarFilm(mappedData)
-      } catch (error) {
-        tampilNotif('❌ Gagal memuat daftar film dari server!')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [])
+    dispatch(fetchDaftar())
+  }, [dispatch])
+
+  // Memetakan data teks dari server/redux agar gambarnya muncul di UI lokal
+  const daftarFilm = serverData.map(item => {
+    const match = allFilm.find(f => f.alt === item.alt)
+    return match ? { ...match, id: item.id } : { id: item.id, alt: item.alt, badge: item.badge, top: item.top, img: bgHero }
+  })
 
   const tampilNotif = (pesan) => {
     setNotif(pesan)
     setTimeout(() => setNotif(''), 2500)
   }
 
-  // CREATE — Tambah film ke MockAPI
-// CREATE — Tambah film ke MockAPI
+  // TAMBAH FILM (CREATE)
   const handleTambah = async (film) => {
     if (daftarFilm.find(f => f.alt === film.alt)) {
-      tampilNotif('⚠️ Film sudah ada di daftar!');
-      return;
+      tampilNotif('⚠️ Film sudah ada di daftar!')
+      return
     }
 
     try {
-      // Kita hanya mengirim data teks ke MockAPI (tanpa membawa ID lokal bawaan allFilm)
-      const payload = { alt: film.alt, badge: film.badge, top: film.top };
-      const newFilm = await addDaftar(payload);
-      
-      // Simpan ke state dengan ID asli string yang dikembalikan oleh MockAPI
-      setDaftarFilm(prev => [...prev, { ...film, id: String(newFilm.id) }]);
-      tampilNotif(`✅ "${film.alt}" berhasil ditambahkan!`);
-      setShowTambah(false);
+      const payload = { alt: film.alt, badge: film.badge, top: film.top }
+      await dispatch(addFilm(payload)).unwrap()
+      tampilNotif(`✅ "${film.alt}" berhasil ditambahkan!`)
+      setShowTambah(false)
     } catch (error) {
-      console.error(error);
-      tampilNotif('❌ Gagal menambahkan film ke server!');
+      tampilNotif('❌ Gagal menambahkan film!')
     }
-  };
+  }
 
-  // UPDATE — Ubah nama film di MockAPI
+  // EDIT JUDUL FILM (UPDATE)
   const handleSimpanEdit = async (id) => {
     if (!editAlt.trim()) {
       tampilNotif('⚠️ Judul film tidak boleh kosong!')
@@ -189,9 +174,8 @@ function DaftarSayaPage() {
     try {
       const filmLama = daftarFilm.find(f => f.id === id)
       const payload = { alt: editAlt, badge: filmLama.badge, top: filmLama.top }
-      await updateDaftar(id, payload)
-
-      setDaftarFilm(prev => prev.map(f => f.id === id ? { ...f, alt: editAlt } : f))
+      
+      await dispatch(editFilm({ id, data: payload })).unwrap()
       setEditId(null)
       tampilNotif('✅ Judul berhasil diperbarui!')
     } catch (error) {
@@ -199,21 +183,18 @@ function DaftarSayaPage() {
     }
   }
 
-  // DELETE — Hapus item terpilih dari MockAPI
+  // HAPUS SELEKSI FILM (DELETE)
   const handleHapusSelected = async () => {
-    const yakinHapus = window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} film terpilih dari daftar tontonan Anda?`)
+    const yakinHapus = window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} film terpilih?`)
     if (!yakinHapus) return
 
     try {
-      // Loop untuk menghapus item satu-per-satu dari MockAPI sesuai ID yang dipilih
-      await Promise.all(selectedIds.map(id => deleteDaftar(id)))
-
-      setDaftarFilm(prev => prev.filter(f => !selectedIds.includes(f.id)))
+      await Promise.all(selectedIds.map(id => dispatch(hapusFilm(id)).unwrap()))
       tampilNotif(`🗑️ ${selectedIds.length} film berhasil dihapus.`)
       setSelectedIds([])
       setModeEdit(false)
     } catch (error) {
-      tampilNotif('❌ Gagal menghapus beberapa film dari server!')
+      tampilNotif('❌ Gagal menghapus beberapa film!')
     }
   }
 
