@@ -4,6 +4,9 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 
+// Import fungsi API call dari services
+import { getDaftar, addDaftar, updateDaftar, deleteDaftar } from '../services/api'
+
 // Import Feather Icons
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi'
 
@@ -77,32 +80,6 @@ const allFilm = [
   { id: 33, img: bgHero, alt: '365 DAYS', badge: null, top: null },
 ]
 
-const initialDaftar = [
-  { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10' },
-  { id: 2, img: colony, alt: 'Colony', badge: 'Episode Baru', top: null },
-  { id: 3, img: sekawanlimo, alt: 'Sekawan Limo', badge: null, top: '10' },
-  { id: 5, img: toystory, alt: 'Toy Story 5', badge: 'Episode Baru', top: '10' },
-  { id: 6, img: furious, alt: 'The Furious', badge: null, top: '10' },
-]
-
-const saveDaftar = (daftar) => {
-  const data = daftar.map(f => ({ id: f.id, alt: f.alt, badge: f.badge, top: f.top }))
-  localStorage.setItem('daftarFilm', JSON.stringify(data))
-}
-
-const loadDaftar = () => {
-  try {
-    const saved = JSON.parse(localStorage.getItem('daftarFilm'))
-    if (!saved) return initialDaftar
-    return saved.map(s => {
-      const match = allFilm.find(f => f.id === s.id) || allFilm.find(f => f.alt === s.alt)
-      return match ? { ...match } : null
-    }).filter(Boolean)
-  } catch {
-    return initialDaftar
-  }
-}
-
 function Header({ onLogout }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const isMobile = useIsMobile()
@@ -139,7 +116,8 @@ function DaftarSayaPage() {
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
-  const [daftarFilm, setDaftarFilm] = useState(loadDaftar)
+  const [daftarFilm, setDaftarFilm] = useState([])
+  const [loading, setLoading] = useState(true)
   const [showTambah, setShowTambah] = useState(false)
   const [editId, setEditId] = useState(null)
   const [editAlt, setEditAlt] = useState('')
@@ -147,26 +125,59 @@ function DaftarSayaPage() {
   const [selectedIds, setSelectedIds] = useState([])
   const [modeEdit, setModeEdit] = useState(false)
 
+  // READ — Ambil data dari MockAPI saat komponen pertama kali di-load
   useEffect(() => {
-    saveDaftar(daftarFilm)
-  }, [daftarFilm])
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const data = await getDaftar()
+        
+        // Memetakan data dari MockAPI dengan gambar lokal berdasarkan alt / judul film
+        const mappedData = data.map(item => {
+          const match = allFilm.find(f => f.alt === item.alt)
+          return match ? { ...match, id: item.id } : { id: item.id, alt: item.alt, badge: item.badge, top: item.top, img: bgHero }
+        })
+        
+        setDaftarFilm(mappedData)
+      } catch (error) {
+        tampilNotif('❌ Gagal memuat daftar film dari server!')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const tampilNotif = (pesan) => {
     setNotif(pesan)
     setTimeout(() => setNotif(''), 2500)
   }
 
-  const handleTambah = (film) => {
+  // CREATE — Tambah film ke MockAPI
+// CREATE — Tambah film ke MockAPI
+  const handleTambah = async (film) => {
     if (daftarFilm.find(f => f.alt === film.alt)) {
-      tampilNotif('⚠️ Film sudah ada di daftar!')
-      return
+      tampilNotif('⚠️ Film sudah ada di daftar!');
+      return;
     }
-    setDaftarFilm(prev => [...prev, { ...film }])
-    tampilNotif(`✅ "${film.alt}" berhasil ditambahkan!`)
-    setShowTambah(false)
-  }
 
-  const handleSimpanEdit = (id) => {
+    try {
+      // Kita hanya mengirim data teks ke MockAPI (tanpa membawa ID lokal bawaan allFilm)
+      const payload = { alt: film.alt, badge: film.badge, top: film.top };
+      const newFilm = await addDaftar(payload);
+      
+      // Simpan ke state dengan ID asli string yang dikembalikan oleh MockAPI
+      setDaftarFilm(prev => [...prev, { ...film, id: String(newFilm.id) }]);
+      tampilNotif(`✅ "${film.alt}" berhasil ditambahkan!`);
+      setShowTambah(false);
+    } catch (error) {
+      console.error(error);
+      tampilNotif('❌ Gagal menambahkan film ke server!');
+    }
+  };
+
+  // UPDATE — Ubah nama film di MockAPI
+  const handleSimpanEdit = async (id) => {
     if (!editAlt.trim()) {
       tampilNotif('⚠️ Judul film tidak boleh kosong!')
       return
@@ -175,19 +186,35 @@ function DaftarSayaPage() {
     const yakinEdit = window.confirm(`Apakah Anda yakin ingin mengubah judul film ini menjadi "${editAlt}"?`)
     if (!yakinEdit) return
 
-    setDaftarFilm(prev => prev.map(f => f.id === id ? { ...f, alt: editAlt } : f))
-    setEditId(null)
-    tampilNotif('✅ Judul berhasil diperbarui!')
+    try {
+      const filmLama = daftarFilm.find(f => f.id === id)
+      const payload = { alt: editAlt, badge: filmLama.badge, top: filmLama.top }
+      await updateDaftar(id, payload)
+
+      setDaftarFilm(prev => prev.map(f => f.id === id ? { ...f, alt: editAlt } : f))
+      setEditId(null)
+      tampilNotif('✅ Judul berhasil diperbarui!')
+    } catch (error) {
+      tampilNotif('❌ Gagal memperbarui judul!')
+    }
   }
 
-  const handleHapusSelected = () => {
+  // DELETE — Hapus item terpilih dari MockAPI
+  const handleHapusSelected = async () => {
     const yakinHapus = window.confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} film terpilih dari daftar tontonan Anda?`)
     if (!yakinHapus) return
 
-    setDaftarFilm(prev => prev.filter(f => !selectedIds.includes(f.id)))
-    tampilNotif(`🗑️ ${selectedIds.length} film berhasil dihapus.`)
-    setSelectedIds([])
-    setModeEdit(false)
+    try {
+      // Loop untuk menghapus item satu-per-satu dari MockAPI sesuai ID yang dipilih
+      await Promise.all(selectedIds.map(id => deleteDaftar(id)))
+
+      setDaftarFilm(prev => prev.filter(f => !selectedIds.includes(f.id)))
+      tampilNotif(`🗑️ ${selectedIds.length} film berhasil dihapus.`)
+      setSelectedIds([])
+      setModeEdit(false)
+    } catch (error) {
+      tampilNotif('❌ Gagal menghapus beberapa film dari server!')
+    }
   }
 
   const toggleSelect = (id) => {
@@ -237,7 +264,11 @@ function DaftarSayaPage() {
           </div>
         )}
 
-        {daftarFilm.length === 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', color: '#aaa', padding: '60px 0', fontSize: '16px' }}>
+            Memuat daftar tontonan kamu...
+          </div>
+        ) : daftarFilm.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#aaa', padding: '60px 0', fontSize: '16px' }}>
             Daftar kamu kosong. Tambahkan film dulu!
           </div>
@@ -302,7 +333,7 @@ function DaftarSayaPage() {
                         setEditId(film.id)
                         setEditAlt(film.alt)
                       }}
-                      style={{ fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold', color: 'white', cursor: modeEdit ? 'text' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'between', gap: '4px' }}
+                      style={{ fontSize: isMobile ? '10px' : '12px', fontWeight: 'bold', color: 'white', cursor: modeEdit ? 'text' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}
                     >
                       <span style={{ flex: 1 }}>{film.alt}</span>
                       {modeEdit && <FiEdit2 size={10} style={{ color: '#aaa' }} />}
