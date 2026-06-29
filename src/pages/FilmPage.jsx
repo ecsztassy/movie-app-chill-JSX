@@ -21,6 +21,8 @@ import foufo from '../assets/foufo.jpg'
 import marvel from '../assets/marvel.jpg'
 import moana from '../assets/moana.jpg'
 import MovieModal from '../components/MovieModal'
+// IMPORT API DI SINI
+import { addDaftar, getDaftar } from '../services/api'
 
 const filmList = [
   { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10', year: '2016', duration: '1j 38m', rating: '13+', description: 'Dono, Kasino, dan Indro kembali beraksi dalam petualangan kocak yang penuh tawa.', cast: 'Vino G. Bastian, Abimana Aryasatya', genre: 'Komedi, Aksi', director: 'Anggy Umbara' },
@@ -36,7 +38,7 @@ const filmList = [
   { id: 11, img: minion, alt: 'Minions & Monsters', badge: null, top: null, year: '2024', duration: '1j 32m', rating: 'Semua Umur', description: 'Para Minion kembali dalam petualangan seru melawan monster-monster lucu.', cast: 'Steve Carell, Pierre Coffin', genre: 'Animasi, Komedi', director: 'Kyle Balda' },
   { id: 12, img: dukun, alt: 'Dukun Magang', badge: null, top: null, year: '2024', duration: '1j 45m', rating: '13+', description: 'Mahasiswa tidak sengaja menjadi murid dukun sakti.', cast: 'Jefan Nathanio, Hana Malasan', genre: 'Komedi, Horor', director: 'Bernardus Yoyok' },
   { id: 13, img: barista, alt: 'Love Barista', badge: null, top: null, year: '2024', duration: '1j 42m', rating: '13+', description: 'Seorang barista muda berjuang mengejar impian sambil menghadapi kisah cinta yang rumit.', cast: 'Adhisty Zara, Bryan Domani', genre: 'Drama, Romansa', director: 'Monty Tiwa' },
-  { id: 14, img: batman, alt: 'The Batman', badge: null, top: '10', year: '2022', duration: '2j 56m', rating: '17+', description: 'Bruce Wayne menghadapi pembunuh berantai misterius bernama Riddler.', cast: 'Robert Pattinson, Zoe Kravitz', genre: 'Action, Crime', director: 'Matt Reeves' },
+  { id: 14, img: batman, alt: 'The Batman', badge: null, top: '10', year: '2022', duration: '2j 56m', rating: '17+', description: 'Bruce Wayne menghadapi pembunuh berantai misterius bernama Riddler.', cast: 'Robert Patton, Zoe Kravitz', genre: 'Action, Crime', director: 'Matt Reeves' },
   { id: 15, img: clbk, alt: 'Cinta Lama Belum Kelar', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 40m', rating: '13+', description: 'Sepasang mantan kekasih dipertemukan kembali menghadapi perasaan lama yang belum selesai.', cast: 'Jourdy Pranata, Prilly Latuconsina', genre: 'Romansa, Drama', director: 'Ernest Prakasa' },
   { id: 16, img: foufo, alt: 'FOUFO', badge: null, top: null, year: '2024', duration: '1j 35m', rating: 'Semua Umur', description: 'Petualangan lucu penuh warna dari karakter unik yang mencoba menyelamatkan dunianya.', cast: 'Voice Cast Animation', genre: 'Animasi, Komedi', director: 'Unknown' },
   { id: 17, img: marvel, alt: 'Avengers Endgame', badge: null, top: '10', year: '2019', duration: '3j 1m', rating: '13+', description: 'Para Avengers melakukan misi terakhir untuk membalikkan kehancuran akibat Thanos.', cast: 'Robert Downey Jr, Chris Evans', genre: 'Action, Sci-Fi', director: 'Russo Brothers' },
@@ -58,14 +60,30 @@ function MovieCard({ movie, onSelect }) {
     navigate('/watch', { state: { movie: { title: movie.alt, img: movie.img } } })
   }
 
-  const handleAddToList = (e) => {
+  // UBAH FUNGSI INI KE API SINKRONISASI
+  const handleAddToList = async (e) => {
     e.stopPropagation()
-    const daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
-    const alreadyExist = daftarFilm.find(item => item.alt === movie.alt)
-    if (alreadyExist) { alert('⚠️ Film sudah ada di Daftar Saya'); return }
-    daftarFilm.push({ id: movie.id || Date.now(), alt: movie.alt, badge: movie.badge || null, top: movie.top || null })
-    localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
-    alert(`✅ "${movie.alt}" ditambahkan ke Daftar Saya`)
+    try {
+      const daftarSaatIni = await getDaftar()
+      const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
+
+      if (sudahAda) {
+        alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
+        return
+      }
+
+      const filmData = {
+        alt: movie.alt,
+        badge: movie.badge || "",
+        top: movie.top || ""
+      }
+
+      await addDaftar(filmData)
+      alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
+    } catch (error) {
+      console.error("Gagal menambahkan:", error)
+      alert("❌ Gagal menambahkan film ke server.")
+    }
   }
 
   const handleDetail = (e) => {
