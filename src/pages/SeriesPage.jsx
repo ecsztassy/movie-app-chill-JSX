@@ -17,6 +17,8 @@ import superman from '../assets/super.jpg'
 import tanah from '../assets/tanah.jpg'
 import usaha from '../assets/usaha.jpg'
 import MovieModal from '../components/MovieModal'
+// IMPORT API DI SINI
+import { addDaftar, getDaftar } from '../services/api'
 
 const seriesList = [
   { id: 1, img: colony, alt: 'Colony', badge: 'Episode Baru', top: null, year: '2021', duration: '1j 52m', rating: '18+', description: 'Sebuah koloni manusia berjuang untuk bertahan hidup di planet asing yang keras.', cast: 'Nora Arnezeder, Iain Glen', genre: 'Fiksi Ilmiah, Drama', director: 'Tim Fehlbaum' },
@@ -50,14 +52,30 @@ function MovieCard({ movie, onSelect }) {
     navigate('/watch', { state: { movie: { title: movie.alt, img: movie.img } } })
   }
 
-  const handleAddToList = (e) => {
+  // UBAH FUNGSI INI KE API SINKRONISASI
+  const handleAddToList = async (e) => {
     e.stopPropagation()
-    const daftarFilm = JSON.parse(localStorage.getItem('daftarFilm')) || []
-    const alreadyExist = daftarFilm.find(item => item.alt === movie.alt)
-    if (alreadyExist) { alert('⚠️ Film sudah ada di Daftar Saya'); return }
-    daftarFilm.push({ id: movie.id || Date.now(), alt: movie.alt, badge: movie.badge || null, top: movie.top || null })
-    localStorage.setItem('daftarFilm', JSON.stringify(daftarFilm))
-    alert(`✅ "${movie.alt}" ditambahkan ke Daftar Saya`)
+    try {
+      const daftarSaatIni = await getDaftar()
+      const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
+
+      if (sudahAda) {
+        alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
+        return
+      }
+
+      const filmData = {
+        alt: movie.alt,
+        badge: movie.badge || "",
+        top: movie.top || ""
+      }
+
+      await addDaftar(filmData)
+      alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
+    } catch (error) {
+      console.error("Gagal menambahkan:", error)
+      alert("❌ Gagal menambahkan film ke server.")
+    }
   }
 
   const handleDetail = (e) => {
