@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux' // Tambah import Redux
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 import warkop from '../assets/warkop.jpg'
@@ -21,8 +22,9 @@ import foufo from '../assets/foufo.jpg'
 import marvel from '../assets/marvel.jpg'
 import moana from '../assets/moana.jpg'
 import MovieModal from '../components/MovieModal'
-// IMPORT API DI SINI
-import { addDaftar, getDaftar } from '../services/api'
+
+// IMPORT ASYNC THUNK REDUX KAMU (Sesuaikan path jika berbeda)
+import { fetchDaftar, addFilm } from '../store/redux/daftarSlice'
 
 const filmList = [
   { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10', year: '2016', duration: '1j 38m', rating: '13+', description: 'Dono, Kasino, dan Indro kembali beraksi dalam petualangan kocak yang penuh tawa.', cast: 'Vino G. Bastian, Abimana Aryasatya', genre: 'Komedi, Aksi', director: 'Anggy Umbara' },
@@ -54,36 +56,36 @@ const getRandomRecommendations = (currentAlt, count = 3) => {
 function MovieCard({ movie, onSelect }) {
   const [hovered, setHovered] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  
+  // Mengambil daftar film yang ada di Redux Store saat ini
+  const daftarSaatIni = useSelector((state) => state.daftar.data)
 
   const handlePlay = (e) => {
     e.stopPropagation()
     navigate('/watch', { state: { movie: { title: movie.alt, img: movie.img } } })
   }
 
-  // UBAH FUNGSI INI KE API SINKRONISASI
   const handleAddToList = async (e) => {
     e.stopPropagation()
-    try {
-      const daftarSaatIni = await getDaftar()
-      const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
-
-      if (sudahAda) {
-        alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
-        return
-      }
-
-      const filmData = {
-        alt: movie.alt,
-        badge: movie.badge || "",
-        top: movie.top || ""
-      }
-
-      await addDaftar(filmData)
-      alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
-    } catch (error) {
-      console.error("Gagal menambahkan:", error)
-      alert("❌ Gagal menambahkan film ke server.")
+    
+    // Validasi duplikasi berdasarkan state Redux
+    const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
+    if (sudahAda) {
+      alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
+      return
     }
+
+    const filmData = {
+      alt: movie.alt,
+      img: movie.img, // MEMPERBAIKI ISSUE: Gambar wajib disertakan agar tidak acak
+      badge: movie.badge || "",
+      top: movie.top || ""
+    }
+
+    // Menggunakan action Redux AsyncThunk bukan langsung fungsi API asli
+    dispatch(addFilm(filmData))
+    alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
   }
 
   const handleDetail = (e) => {
@@ -149,7 +151,13 @@ function Header({ onLogout }) {
 
 function FilmPage() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [selectedMovie, setSelectedMovie] = useState(null)
+
+  // Memastikan data terbaru dari server selalu ter-fetch saat halaman dimuat
+  useEffect(() => {
+    dispatch(fetchDaftar())
+  }, [dispatch])
 
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
