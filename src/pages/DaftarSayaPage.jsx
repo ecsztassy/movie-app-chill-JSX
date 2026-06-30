@@ -111,6 +111,68 @@ function Header({ onLogout }) {
   )
 }
 
+function Footer() {
+  const isMobile = useIsMobile()
+  const [openMenu, setOpenMenu] = useState(null)
+
+  const toggleMenu = (menu) => setOpenMenu(prev => prev === menu ? null : menu)
+
+  const genres = ['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller']
+  const bantuan = ['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan']
+
+  return (
+    <footer style={{ background: '#111', padding: isMobile ? '20px 15px' : '40px', marginTop: '50px' }}>
+      {!isMobile ? (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '60px' }}>
+          <div style={{ minWidth: '220px' }}>
+            <img src={logo} alt="Logo Chill" style={{ width: '110px', marginBottom: '15px' }} />
+            <p style={{ color: '#888', fontSize: '13px' }}>©2026 Chill All Rights Reserved.</p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '15px', fontSize: '14px' }}>Genre</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px' }}>
+              {[['Aksi', 'Anak-anak', 'Anime', 'Britania'], ['Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama'], ['Komedi', 'Petualangan', 'Perang', 'Romantis'], ['Sains & Alam', 'Thriller']].map((col, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {col.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '14px' }}>Bantuan</div>
+            {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <img src={logo} alt="Logo Chill" style={{ width: '85px', marginBottom: '8px' }} />
+          <p style={{ color: '#888', fontSize: '11px', marginBottom: '25px' }}>©2026 Chill All Rights Reserved.</p>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('genre')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Genre <span style={{ color: '#888' }}>{openMenu === 'genre' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'genre' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {genres.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+              </div>
+            )}
+          </div>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('bantuan')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Bantuan <span style={{ color: '#888' }}>{openMenu === 'bantuan' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'bantuan' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </footer>
+  )
+}
+
 function DaftarSayaPage() {
   const navigate = useNavigate()
   const isMobile = useIsMobile()
@@ -210,10 +272,10 @@ function DaftarSayaPage() {
   })
 
   return (
-    <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ background: '#181818', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'Arial, sans-serif' }}>
       <Header onLogout={() => { localStorage.removeItem('isPremium'); localStorage.removeItem('premiumPlan'); navigate('/login') }} />
 
-      <div style={{ padding: isMobile ? '20px 15px' : '40px' }}>
+      <div style={{ padding: isMobile ? '20px 15px' : '40px', flex: '1 0 auto' }}>
         {notif && (
           <div style={{ background: '#2a2a2a', border: '1px solid #444', color: 'white', padding: '12px 20px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
             {notif}
@@ -324,6 +386,9 @@ function DaftarSayaPage() {
           </div>
         )}
       </div>
+
+      {/* Footer Komponen */}
+      <Footer />
 
       {/* Modal Tambah */}
       {showTambah && (
