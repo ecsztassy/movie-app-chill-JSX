@@ -1,50 +1,31 @@
-import { useState, useEffect, useRef } from 'react' // 1. TAMBAHKAN useRef DI SINI
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
-import warkop from '../assets/warkop.jpg'
-import toystory from '../assets/toystory.jpg'
-import furious from '../assets/furiosjpg.jpg'
-import alas from '../assets/alas.jpg'
-import cell from '../assets/cell.jpeg'
-import irit from '../assets/irit.jpg'
-import jumbo from '../assets/jumbo.jpg'
-import ibu from '../assets/ibu.jpg'
-import garuda from '../assets/garuda.jpg'
-import badut from '../assets/badut.jpg'
-import minion from '../assets/minion.jpg'
-import dukun from '../assets/dukun.jpg'
-import barista from '../assets/barista.jpg'
-import batman from '../assets/batman.jpg'
-import clbk from '../assets/clbk.jpg'
-import foufo from '../assets/foufo.jpg'
-import marvel from '../assets/marvel.jpg'
-import moana from '../assets/moana.jpg'
+import sekawanlimo from '../assets/sekawanlimo.jpg'
+import ipar from '../assets/ipar.jpeg'
+import agaklaen from '../assets/agaklaen.jpeg'
+import kairi from '../assets/kairi.jpeg'
+import gjls from '../assets/gjls.jpg'
+import sore from '../assets/sore.jpg'
+import petaka from '../assets/petaka.jpg'
+import robin from '../assets/robin.jpg'
+import spiderman from '../assets/spiderman.jpg'
 import MovieModal from '../components/MovieModal'
 
-// IMPORT ASYNC THUNK REDUX KAMU (Sesuaikan path jika berbeda)
 import { fetchDaftar, addFilm } from '../store/redux/daftarSlice'
 
 const filmList = [
-  { id: 1, img: warkop, alt: 'Warkop DKI Reborn', badge: null, top: '10', year: '2016', duration: '1j 38m', rating: '13+', description: 'Dono, Kasino, dan Indro kembali beraksi dalam petualangan kocak yang penuh tawa.', cast: 'Vino G. Bastian, Abimana Aryasatya', genre: 'Komedi, Aksi', director: 'Anggy Umbara' },
-  { id: 2, img: toystory, alt: 'Toy Story 5', badge: 'Episode Baru', top: '10', year: '2024', duration: '1j 55m', rating: 'Semua Umur', description: 'Woody, Buzz, dan geng mainan kembali dalam petualangan baru yang mengharukan.', cast: 'Tom Hanks, Tim Allen', genre: 'Animasi, Keluarga', director: 'Josh Cooley' },
-  { id: 3, img: furious, alt: 'The Furious', badge: null, top: '10', year: '2023', duration: '2j 21m', rating: '17+', description: 'Aksi balapan liar di jalanan kota yang mempertaruhkan nyawa.', cast: 'Vin Diesel, Michelle Rodriguez', genre: 'Aksi, Balapan', director: 'Justin Lin' },
-  { id: 4, img: alas, alt: 'Alas Roban', badge: null, top: null, year: '2023', duration: '1j 38m', rating: '17+', description: 'Perjalanan melewati hutan angker Alas Roban berubah menjadi teror yang mencekam.', cast: 'Arbani Yasiz, Maudy Effrosina', genre: 'Horor, Misteri', director: 'Awi Suryadi' },
-  { id: 5, img: cell, alt: 'Ghost in the Cell', badge: null, top: '10', year: '2023', duration: '1j 58m', rating: '17+', description: 'Seorang tahanan dengan kemampuan supernatural melindungi sesama narapidana.', cast: 'John Boyega, Michael Shannon', genre: 'Horor, Thriller', director: 'James Wan' },
-  { id: 6, img: irit, alt: 'Keluarga Super Irit', badge: null, top: null, year: '2024', duration: '1j 35m', rating: 'Semua Umur', description: 'Keluarga paling irit se-Indonesia menghadapi tantangan ketika mendapat warisan besar.', cast: 'Sule, Andre Taulany', genre: 'Komedi, Keluarga', director: 'Fajar Nugros' },
-  { id: 7, img: jumbo, alt: 'Jumbo', badge: 'Episode Baru', top: null, year: '2025', duration: '1j 48m', rating: 'Semua Umur', description: 'Don menemukan sahabat tak terduga dalam petualangan magis penuh warna.', cast: 'Angga Yunanda, Aurora Ribero', genre: 'Animasi, Petualangan', director: 'Ryan Adriandhy' },
-  { id: 8, img: ibu, alt: 'Jangan Buang Ibu', badge: null, top: '10', year: '2024', duration: '1j 50m', rating: '13+', description: 'Kisah perjuangan seorang ibu yang ditinggalkan anak-anaknya di panti jompo.', cast: 'Nani Wijaya, Marcella Zalianty', genre: 'Drama, Keluarga', director: 'Rako Prijanto' },
-  { id: 9, img: garuda, alt: 'Garuda di Dadaku', badge: null, top: null, year: '2024', duration: '1j 40m', rating: 'Semua Umur', description: 'Bayu berjuang meraih mimpinya bergabung dengan Timnas Indonesia.', cast: 'Emir Mahira, Aldo Tansani', genre: 'Drama, Olahraga', director: 'Ifa Isfansyah' },
-  { id: 10, img: badut, alt: 'Badut Gendong', badge: null, top: null, year: '2024', duration: '1j 55m', rating: '17+', description: 'Di balik kostum badut ceria, tersimpan kisah kelam seorang pria dalam lingkaran kriminal.', cast: 'Ario Bayu, Putri Marino', genre: 'Thriller, Drama', director: 'Edwin' },
-  { id: 11, img: minion, alt: 'Minions & Monsters', badge: null, top: null, year: '2024', duration: '1j 32m', rating: 'Semua Umur', description: 'Para Minion kembali dalam petualangan seru melawan monster-monster lucu.', cast: 'Steve Carell, Pierre Coffin', genre: 'Animasi, Komedi', director: 'Kyle Balda' },
-  { id: 12, img: dukun, alt: 'Dukun Magang', badge: null, top: null, year: '2024', duration: '1j 45m', rating: '13+', description: 'Mahasiswa tidak sengaja menjadi murid dukun sakti.', cast: 'Jefan Nathanio, Hana Malasan', genre: 'Komedi, Horor', director: 'Bernardus Yoyok' },
-  { id: 13, img: barista, alt: 'Love Barista', badge: null, top: null, year: '2024', duration: '1j 42m', rating: '13+', description: 'Seorang barista muda berjuang mengejar impian sambil menghadapi kisah cinta yang rumit.', cast: 'Adhisty Zara, Bryan Domani', genre: 'Drama, Romansa', director: 'Monty Tiwa' },
-  { id: 14, img: batman, alt: 'The Batman', badge: null, top: '10', year: '2022', duration: '2j 56m', rating: '17+', description: 'Bruce Wayne menghadapi pembunuh berantai misterius bernama Riddler.', cast: 'Robert Patton, Zoe Kravitz', genre: 'Action, Crime', director: 'Matt Reeves' },
-  { id: 15, img: clbk, alt: 'Cinta Lama Belum Kelar', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 40m', rating: '13+', description: 'Sepasang mantan kekasih dipertemukan kembali menghadapi perasaan lama yang belum selesai.', cast: 'Jourdy Pranata, Prilly Latuconsina', genre: 'Romansa, Drama', director: 'Ernest Prakasa' },
-  { id: 16, img: foufo, alt: 'FOUFO', badge: null, top: null, year: '2024', duration: '1j 35m', rating: 'Semua Umur', description: 'Petualangan lucu penuh warna dari karakter unik yang mencoba menyelamatkan dunianya.', cast: 'Voice Cast Animation', genre: 'Animasi, Komedi', director: 'Unknown' },
-  { id: 17, img: marvel, alt: 'Avengers Endgame', badge: null, top: '10', year: '2019', duration: '3j 1m', rating: '13+', description: 'Para Avengers melakukan misi terakhir untuk membalikkan kehancuran akibat Thanos.', cast: 'Robert Downey Jr, Chris Evans', genre: 'Action, Sci-Fi', director: 'Russo Brothers' },
-  { id: 18, img: moana, alt: 'Moana', badge: 'Episode Baru', top: null, year: '2016', duration: '1j 47m', rating: 'Semua Umur', description: 'Moana memulai perjalanan berbahaya melintasi samudra untuk menyelamatkan rakyatnya.', cast: 'Aulii Cravalho, Dwayne Johnson', genre: 'Animation, Adventure', director: 'Ron Clements' },
+  { id: 1, img: gjls, alt: 'GJLS', badge: 'Episode Baru', top: null, year: '2025', duration: '1j 42m', rating: '13+', description: 'Kisah cinta penuh drama dan tawa dari empat sahabat.', cast: 'Raditya Dika, Arawinda Kirana', genre: 'Komedi, Romansa', director: 'Raditya Dika' },
+  { id: 2, img: sore, alt: 'Sore', badge: null, top: '10', year: '2024', duration: '2j 10m', rating: '13+', description: 'Sore adalah istri dari masa depan yang kembali ke masa lalu.', cast: 'Sheila Dara, Dion Wiyoko', genre: 'Romansa, Drama', director: 'Yandy Laurens' },
+  { id: 3, img: petaka, alt: 'Petaka Gunung Gede', badge: null, top: null, year: '2024', duration: '1j 46m', rating: '17+', description: 'Pendakian berubah menjadi teror ketika sekelompok anak muda tersesat.', cast: 'Arbani Yasiz, Kiesha Alvaro', genre: 'Horor', director: 'Azhar Kinoi Lubis' },
+  { id: 4, img: robin, alt: 'Robin Hood', badge: null, top: '10', year: '2018', duration: '1j 56m', rating: '13+', description: 'Robin Hood memimpin pemberontakan melawan korupsi kerajaan.', cast: 'Taron Egerton, Jamie Foxx', genre: 'Aksi, Petualangan', director: 'Otto Bathurst' },
+  { id: 5, img: spiderman, alt: 'Spider-Man No Way Home', badge: null, top: '10', year: '2021', duration: '2j 28m', rating: '13+', description: 'Peter Parker menghadapi kekacauan multiverse.', cast: 'Tom Holland, Zendaya', genre: 'Aksi, Fiksi Ilmiah', director: 'Jon Watts' },
+  { id: 6, img: sekawanlimo, alt: 'Sekawan Limo', badge: null, top: '10', year: '2024', duration: '2j 5m', rating: '13+', description: 'Lima sahabat nekat mendaki gunung angker demi konten viral.', cast: 'Endy Arfian, Bimasena', genre: 'Horor, Komedi', director: 'Bayu Skak' },
+  { id: 7, img: ipar, alt: 'Ipar Adalah Maut', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 50m', rating: '17+', description: 'Drama pernikahan yang mengangkat isu perselingkuhan dalam keluarga.', cast: 'Adipati Dolken, Della Dartyan', genre: 'Drama, Romansa', director: 'Hanung Bramantyo' },
+  { id: 8, img: agaklaen, alt: 'Agak Laen', badge: null, top: '10', year: '2024', duration: '1j 44m', rating: '13+', description: 'Empat penjaga rumah hantu berusaha membuat wahana mereka viral.', cast: 'Bene Dion, Muhadkly Acho', genre: 'Komedi', director: 'Muhadkly Acho' },
+  { id: 9, img: kairi, alt: 'Nobody Loves Kay', badge: null, top: null, year: '2024', duration: '1j 52m', rating: '13+', description: 'Kay adalah gadis muda yang merasa tidak dicintai siapapun.', cast: 'Beby Tsabina, Refal Hady', genre: 'Drama, Romansa', director: 'Riri Riza' }
 ]
 
 const getRandomRecommendations = (currentAlt, count = 3) => {
@@ -57,8 +38,6 @@ function MovieCard({ movie, onSelect }) {
   const [hovered, setHovered] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  
-  // Mengambil daftar film yang ada di Redux Store saat ini
   const daftarSaatIni = useSelector((state) => state.daftar.data)
 
   const handlePlay = (e) => {
@@ -68,22 +47,12 @@ function MovieCard({ movie, onSelect }) {
 
   const handleAddToList = async (e) => {
     e.stopPropagation()
-    
-    // Validasi duplikasi berdasarkan state Redux
     const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
     if (sudahAda) {
       alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
       return
     }
-
-    const filmData = {
-      alt: movie.alt,
-      img: movie.img, // MEMPERBAIKI ISSUE: Gambar wajib disertakan agar tidak acak
-      badge: movie.badge || "",
-      top: movie.top || ""
-    }
-
-    // Menggunakan action Redux AsyncThunk bukan langsung fungsi API asli
+    const filmData = { alt: movie.alt, img: movie.img, badge: movie.badge || "", top: movie.top || "" }
     dispatch(addFilm(filmData))
     alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
   }
@@ -149,28 +118,93 @@ function Header({ onLogout }) {
   )
 }
 
+function Footer() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [openMenu, setOpenMenu] = useState(null)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const toggleMenu = (menu) => setOpenMenu(prev => prev === menu ? null : menu)
+
+  const genres = ['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller']
+  const bantuan = ['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan']
+
+  return (
+    <footer style={{ background: '#111', padding: isMobile ? '20px 15px' : '40px', marginTop: '50px' }}>
+      {!isMobile ? (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '60px' }}>
+          <div style={{ minWidth: '220px' }}>
+            <img src={logo} alt="Logo Chill" style={{ width: '110px', marginBottom: '15px' }} />
+            <p style={{ color: '#888', fontSize: '13px' }}>©2026 Chill All Rights Reserved.</p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '15px', fontSize: '14px' }}>Genre</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px' }}>
+              {[['Aksi', 'Anak-anak', 'Anime', 'Britania'], ['Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama'], ['Komedi', 'Petualangan', 'Perang', 'Romantis'], ['Sains & Alam', 'Thriller']].map((col, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {col.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '14px' }}>Bantuan</div>
+            {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <img src={logo} alt="Logo Chill" style={{ width: '85px', marginBottom: '8px' }} />
+          <p style={{ color: '#888', fontSize: '11px', marginBottom: '25px' }}>©2026 Chill All Rights Reserved.</p>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('genre')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Genre <span style={{ color: '#888' }}>{openMenu === 'genre' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'genre' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {genres.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+              </div>
+            )}
+          </div>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('bantuan')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Bantuan <span style={{ color: '#888' }}>{openMenu === 'bantuan' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'bantuan' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </footer>
+  )
+}
+
 function FilmPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [selectedMovie, setSelectedMovie] = useState(null)
-  
-  // 2. BUAT REF UNTUK MENANGKAP ELEMEN KONTAINER SCROLL
   const scrollContainerRef = useRef(null)
 
   useEffect(() => {
     dispatch(fetchDaftar())
   }, [dispatch])
 
-  // 3. FUNGSI UNTUK MENGGESER SCROLL KE KANAN / KIRI
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 500; // Jarak geser dalam pixel (bisa kamu sesuaikan)
+      const scrollAmount = 500
       scrollContainerRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth' // Efek geser halus/smooth
-      });
+        behavior: 'smooth'
+      })
     }
-  };
+  }
 
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
@@ -178,35 +212,10 @@ function FilmPage() {
       <div style={{ padding: '40px' }}>
         <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>Film</h1>
         
-        {/* Pembungkus relatif agar tombol panah bisa diposisikan absolute di kanan-kiri */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          
-          {/* TOMBOL PANAH KIRI */}
-          <button 
-            onClick={() => handleScroll('left')}
-            style={{
-              position: 'absolute', left: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
-              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
-              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
-              alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            ‹
-          </button>
+          <button onClick={() => handleScroll('left')} style={{ position: 'absolute', left: '-20px', zIndex: 10, background: 'rgba(40,40,40,0.95)', color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>❮</button>
 
-          {/* KONTAINER UTAMA (Diberikan ref={scrollContainerRef}) */}
-          <div 
-            ref={scrollContainerRef}
-            style={{ 
-              display: 'flex', 
-              overflowX: 'auto', 
-              gap: '16px', 
-              paddingBottom: '15px',
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              width: '100%'
-            }}
-          >
+          <div ref={scrollContainerRef} style={{ display: 'flex', overflowX: 'auto', gap: '16px', paddingBottom: '15px', paddingRight: '40px', scrollbarWidth: 'none', msOverflowStyle: 'none', width: '100%', scrollBehavior: 'smooth' }}>
             {filmList.map(f => (
               <div key={f.id} style={{ flexShrink: 0, width: '160px' }}>
                 <MovieCard movie={f} onSelect={setSelectedMovie} />
@@ -214,21 +223,10 @@ function FilmPage() {
             ))}
           </div>
 
-          {/* TOMBOL PANAH KANAN */}
-          <button 
-            onClick={() => handleScroll('right')}
-            style={{
-              position: 'absolute', right: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
-              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
-              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
-              alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            ›
-          </button>
-
+          <button onClick={() => handleScroll('right')} style={{ position: 'absolute', right: '-20px', zIndex: 10, background: 'rgba(40,40,40,0.95)', color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>❯</button>
         </div>
       </div>
+      <Footer />
       {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
     </div>
   )
