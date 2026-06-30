@@ -87,22 +87,20 @@ function Header({ onLogout }) {
   return (
     <header style={{ background: '#101010', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 15px' : '18px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '30px' }}>
-        <Link to="/home"><img src={logo} alt="Logo Chill" style={{ width: isMobile ? '70px' : '100px' }} /></Link>
-        {!isMobile && (
-          <nav style={{ display: 'flex', gap: '20px' }}>
-            <Link to="/series" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Series</Link>
-            <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Film</Link>
-            <Link to="/daftar-saya" style={{ color: 'white', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>Daftar Saya</Link>
-          </nav>
-        )}
+        <Link to="/home"><img src={logo} alt="Logo Chill" style={{ width: isMobile ? '55px' : '100px' }} /></Link>
+        <nav style={{ display: 'flex', gap: isMobile ? '10px' : '20px' }}>
+          <Link to="/series" style={{ color: '#ccc', textDecoration: 'none', fontSize: isMobile ? '11px' : '14px' }}>Series</Link>
+          <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: isMobile ? '11px' : '14px' }}>Film</Link>
+          <Link to="/daftar-saya" style={{ color: 'white', textDecoration: 'none', fontSize: isMobile ? '11px' : '14px', fontWeight: 'bold' }}>Daftar Saya</Link>
+        </nav>
       </div>
       <div style={{ position: 'relative' }}>
-        <div onClick={() => setDropdownOpen(p => !p)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-          <img src={profil} alt="profile" style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', borderRadius: '50%', objectFit: 'cover' }} />
-          <span style={{ color: '#aaa', fontSize: '12px' }}>▼</span>
+        <div onClick={() => setDropdownOpen(p => !p)} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+          <img src={profil} alt="profile" style={{ width: isMobile ? '24px' : '34px', height: isMobile ? '24px' : '34px', borderRadius: '50%', objectFit: 'cover' }} />
+          <span style={{ color: '#aaa', fontSize: '10px' }}>▼</span>
         </div>
         {dropdownOpen && (
-          <div style={{ position: 'absolute', top: '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
+          <div style={{ position: 'absolute', top: isMobile ? '35px' : '45px', right: 0, width: '180px', background: '#222', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,.4)', zIndex: 999 }}>
             <Link to="/profile" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>👤 Profil Saya</Link>
             <Link to="/premium" style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white', borderBottom: '1px solid #333' }}>⭐ Ubah Premium</Link>
             <a href="#" onClick={onLogout} style={{ display: 'block', padding: '14px', textDecoration: 'none', color: 'white' }}>⬅️ Logout</a>
