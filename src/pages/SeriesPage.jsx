@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react' // 1. TAMBAHKAN useRef DI SINI
 import { useNavigate, Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux' // Tambah import Redux
+import { useDispatch, useSelector } from 'react-redux'
 import logo from '../assets/logo.png'
 import profil from '../assets/profil.jpg'
 import colony from '../assets/Colony.jpg'
@@ -141,23 +141,87 @@ function Header({ onLogout }) {
   )
 }
 
+// ... kode lainnya tetap sama ...
+
 function SeriesPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [selectedMovie, setSelectedMovie] = useState(null)
+  
+  // 1. BUAT REF UNTUK KONTAINER SCROLL SERIES
+  const scrollContainerRef = useRef(null)
 
-  // Memastikan data terbaru dari server selalu ter-fetch saat halaman dimuat
   useEffect(() => {
     dispatch(fetchDaftar())
   }, [dispatch])
+
+  // 2. FUNGSI UNTUK MENGGESER SCROLL
+  const handleScroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 500; // Jarak geser (bisa disesuaikan)
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
       <Header onLogout={() => { localStorage.removeItem('isPremium'); localStorage.removeItem('premiumPlan'); navigate('/login') }} />
       <div style={{ padding: '40px' }}>
         <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>Series</h1>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
-          {seriesList.map(f => <MovieCard key={f.id} movie={f} onSelect={setSelectedMovie} />)}
+        
+        {/* Pembungkus relatif untuk memposisikan tombol panah */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          
+          {/* TOMBOL PANAH KIRI */}
+          <button 
+            onClick={() => handleScroll('left')}
+            style={{
+              position: 'absolute', left: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
+              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
+              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
+              alignItems: 'center', justifyContent: 'center'
+            }}
+          >
+            ‹
+          </button>
+
+          {/* KONTAINER UTAMA SERIES (Menggunakan ref={scrollContainerRef}) */}
+          <div 
+            ref={scrollContainerRef}
+            style={{ 
+              display: 'flex', 
+              overflowX: 'auto', 
+              gap: '16px', 
+              paddingBottom: '15px',
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              width: '100%'
+            }}
+          >
+            {seriesList.map(f => (
+              /* Bungkus card agar ukurannya tetap proporsional saat berjejer */
+              <div key={f.id} style={{ flexShrink: 0, width: '160px' }}>
+                <MovieCard movie={f} onSelect={setSelectedMovie} />
+              </div>
+            ))}
+          </div>
+
+          {/* TOMBOL PANAH KANAN */}
+          <button 
+            onClick={() => handleScroll('right')}
+            style={{
+              position: 'absolute', right: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
+              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
+              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
+              alignItems: 'center', justifyContent: 'center'
+            }}
+          >
+            ›
+          </button>
+
         </div>
       </div>
       {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
