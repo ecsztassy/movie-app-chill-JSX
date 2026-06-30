@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react' // 1. TAMBAHKAN useRef DI SINI
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import logo from '../assets/logo.png'
@@ -12,14 +12,13 @@ import kairi from '../assets/kairi.jpeg'
 import gjls from '../assets/gjls.jpg'
 import sore from '../assets/sore.jpg'
 import petaka from '../assets/petaka.jpg'
-import robin from '../assets/robin.jpg'
+import robin  from '../assets/robin.jpg'
 import spiderman from '../assets/spiderman.jpg'
 import superman from '../assets/super.jpg'
 import tanah from '../assets/tanah.jpg'
 import usaha from '../assets/usaha.jpg'
 import MovieModal from '../components/MovieModal'
 
-// IMPORT ASYNC THUNK REDUX KAMU (Sesuaikan path jika berbeda)
 import { fetchDaftar, addFilm } from '../store/redux/daftarSlice'
 
 const seriesList = [
@@ -29,7 +28,7 @@ const seriesList = [
   { id: 4, img: ipar, alt: 'Ipar Adalah Maut', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 50m', rating: '17+', description: 'Drama pernikahan yang mengangkat isu perselingkuhan dalam keluarga.', cast: 'Adipati Dolken, Della Dartyan', genre: 'Drama, Romansa', director: 'Hanung Bramantyo' },
   { id: 5, img: agaklaen, alt: 'Agak Laen', badge: null, top: '10', year: '2024', duration: '1j 44m', rating: '13+', description: 'Empat penjaga rumah hantu berusaha membuat wahana mereka viral.', cast: 'Bene Dion, Muhadkly Acho', genre: 'Komedi', director: 'Muhadkly Acho' },
   { id: 6, img: kairi, alt: 'Nobody Loves Kay', badge: null, top: null, year: '2024', duration: '1j 52m', rating: '13+', description: 'Kay adalah gadis muda yang merasa tidak dicintai siapapun.', cast: 'Beby Tsabina, Refal Hady', genre: 'Drama, Romansa', director: 'Riri Riza' },
-  { id: 7, img: gjls, alt: 'GJLS', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 42m', rating: '13+', description: 'Kisah cinta penuh drama dan tawa dari empat sahabat.', cast: 'Raditya Dika, Arawinda Kirana', genre: 'Komedi, Romansa', director: 'Raditya Dika' },
+  { id: 7, img: gjls, alt: 'GJLS', badge: 'Episode Baru', top: null, year: '2024', duration: '1j 42m', rating: '13+', description: 'Kisah cinta penuh drama and tawa dari empat sahabat.', cast: 'Raditya Dika, Arawinda Kirana', genre: 'Komedi, Romansa', director: 'Raditya Dika' },
   { id: 8, img: sore, alt: 'Sore', badge: null, top: '10', year: '2024', duration: '2j 10m', rating: '13+', description: 'Sore adalah istri dari masa depan yang kembali ke masa lalu.', cast: 'Sheila Dara, Dion Wiyoko', genre: 'Romansa, Drama', director: 'Yandy Laurens' },
   { id: 9, img: petaka, alt: 'Petaka Gunung Gede', badge: null, top: null, year: '2024', duration: '1j 46m', rating: '17+', description: 'Pendakian berubah menjadi teror ketika sekelompok anak muda tersesat.', cast: 'Arbani Yasiz, Kiesha Alvaro', genre: 'Horror', director: 'Azhar Kinoi Lubis' },
   { id: 10, img: robin, alt: 'Robin Hood', badge: null, top: '10', year: '2018', duration: '1j 56m', rating: '13+', description: 'Robin Hood memimpin pemberontakan melawan korupsi kerajaan.', cast: 'Taron Egerton, Jamie Foxx', genre: 'Action, Adventure', director: 'Otto Bathurst' },
@@ -49,8 +48,6 @@ function MovieCard({ movie, onSelect }) {
   const [hovered, setHovered] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  // Mengambil daftar film yang ada di Redux Store saat ini
   const daftarSaatIni = useSelector((state) => state.daftar.data)
 
   const handlePlay = (e) => {
@@ -60,22 +57,12 @@ function MovieCard({ movie, onSelect }) {
 
   const handleAddToList = async (e) => {
     e.stopPropagation()
-    
-    // Validasi duplikasi berdasarkan state Redux
     const sudahAda = daftarSaatIni.find(item => item.alt === movie.alt)
     if (sudahAda) {
       alert(`⚠️ Film "${movie.alt}" sudah ada di Daftar Saya!`)
       return
     }
-
-    const filmData = {
-      alt: movie.alt,
-      img: movie.img, // MEMPERBAIKI ISSUE: Gambar wajib disertakan agar tidak acak
-      badge: movie.badge || "",
-      top: movie.top || ""
-    }
-
-    // Menggunakan action Redux AsyncThunk bukan langsung fungsi API asli
+    const filmData = { alt: movie.alt, img: movie.img, badge: movie.badge || "", top: movie.top || "" }
     dispatch(addFilm(filmData))
     alert(`✅ "${movie.alt}" berhasil ditambahkan ke Daftar Saya!`)
   }
@@ -141,30 +128,93 @@ function Header({ onLogout }) {
   )
 }
 
-// ... kode lainnya tetap sama ...
+function Footer() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [openMenu, setOpenMenu] = useState(null)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const toggleMenu = (menu) => setOpenMenu(prev => prev === menu ? null : menu)
+
+  const genres = ['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller']
+  const bantuan = ['FAQ', 'Kontak Kami', 'Privasi', 'Syarat & Ketentuan']
+
+  return (
+    <footer style={{ background: '#111', padding: isMobile ? '20px 15px' : '40px', marginTop: '50px' }}>
+      {!isMobile ? (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '60px' }}>
+          <div style={{ minWidth: '220px' }}>
+            <img src={logo} alt="Logo Chill" style={{ width: '110px', marginBottom: '15px' }} />
+            <p style={{ color: '#888', fontSize: '13px' }}>©2026 Chill All Rights Reserved.</p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '15px', fontSize: '14px' }}>Genre</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px' }}>
+              {[['Aksi', 'Anak-anak', 'Anime', 'Britania'], ['Drama', 'Fantasi Ilmiah', 'Kejahatan', 'KDrama'], ['Komedi', 'Petualangan', 'Perang', 'Romantis'], ['Sains & Alam', 'Thriller']].map((col, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {col.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '14px' }}>Bantuan</div>
+            {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <img src={logo} alt="Logo Chill" style={{ width: '85px', marginBottom: '8px' }} />
+          <p style={{ color: '#888', fontSize: '11px', marginBottom: '25px' }}>©2026 Chill All Rights Reserved.</p>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('genre')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Genre <span style={{ color: '#888' }}>{openMenu === 'genre' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'genre' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {genres.map(g => <a key={g} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{g}</a>)}
+              </div>
+            )}
+          </div>
+          <div style={{ borderBottom: '1px solid #333' }}>
+            <div onClick={() => toggleMenu('bantuan')} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: '14px', cursor: 'pointer' }}>
+              Bantuan <span style={{ color: '#888' }}>{openMenu === 'bantuan' ? '▲' : '▼'}</span>
+            </div>
+            {openMenu === 'bantuan' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '10px', paddingLeft: '10px' }}>
+                {bantuan.map(item => <a key={item} href="#" style={{ color: '#aaa', textDecoration: 'none', fontSize: '13px' }}>{item}</a>)}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </footer>
+  )
+}
 
 function SeriesPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [selectedMovie, setSelectedMovie] = useState(null)
-  
-  // 1. BUAT REF UNTUK KONTAINER SCROLL SERIES
   const scrollContainerRef = useRef(null)
 
   useEffect(() => {
     dispatch(fetchDaftar())
   }, [dispatch])
 
-  // 2. FUNGSI UNTUK MENGGESER SCROLL
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 500; // Jarak geser (bisa disesuaikan)
+      const scrollAmount = 500
       scrollContainerRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
-      });
+      })
     }
-  };
+  }
 
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
@@ -172,58 +222,21 @@ function SeriesPage() {
       <div style={{ padding: '40px' }}>
         <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>Series</h1>
         
-        {/* Pembungkus relatif untuk memposisikan tombol panah */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          
-          {/* TOMBOL PANAH KIRI */}
-          <button 
-            onClick={() => handleScroll('left')}
-            style={{
-              position: 'absolute', left: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
-              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
-              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
-              alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            ‹
-          </button>
+          <button onClick={() => handleScroll('left')} style={{ position: 'absolute', left: '-20px', zIndex: 10, background: 'rgba(40,40,40,0.95)', color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>❮</button>
 
-          {/* KONTAINER UTAMA SERIES (Menggunakan ref={scrollContainerRef}) */}
-          <div 
-            ref={scrollContainerRef}
-            style={{ 
-              display: 'flex', 
-              overflowX: 'auto', 
-              gap: '16px', 
-              paddingBottom: '15px',
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              width: '100%'
-            }}
-          >
+          <div ref={scrollContainerRef} style={{ display: 'flex', overflowX: 'auto', gap: '16px', paddingBottom: '15px', paddingRight: '40px', scrollbarWidth: 'none', msOverflowStyle: 'none', width: '100%', scrollBehavior: 'smooth' }}>
             {seriesList.map(f => (
-              /* Bungkus card agar ukurannya tetap proporsional saat berjejer */
               <div key={f.id} style={{ flexShrink: 0, width: '160px' }}>
                 <MovieCard movie={f} onSelect={setSelectedMovie} />
               </div>
             ))}
           </div>
 
-          {/* TOMBOL PANAH KANAN */}
-          <button 
-            onClick={() => handleScroll('right')}
-            style={{
-              position: 'absolute', right: '-20px', zIndex: 10, background: 'rgba(0,0,0,0.6)', 
-              color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', 
-              cursor: 'pointer', fontSize: '18px', fontWeight: 'bold', display: 'flex', 
-              alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            ›
-          </button>
-
+          <button onClick={() => handleScroll('right')} style={{ position: 'absolute', right: '-20px', zIndex: 10, background: 'rgba(40,40,40,0.95)', color: 'white', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>❯</button>
         </div>
       </div>
+      <Footer />
       {selectedMovie && <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
     </div>
   )
