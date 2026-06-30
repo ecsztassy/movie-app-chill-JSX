@@ -339,13 +339,13 @@ function Carousel({ title, movies, onSelect }) {
   )
 }
 
-function Header({ onLogout }) {
+function Header({ onLogout, tontonanGenre, setTontonanGenre }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [genreOpen, setGenreOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
-  const genres = ['Aksi', 'Anak-anak', 'Anime', 'Britania', 'Drama', 'Fantasi', 'Kejahatan', 'KDrama', 'Komedi', 'Petualangan', 'Perang', 'Romantis', 'Sains & Alam', 'Thriller']
+  const genres = ['Semua', 'Aksi', 'Anak-anak', 'Anime', 'Drama', 'Komedi', 'Romantis', 'Thriller']
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -368,13 +368,22 @@ function Header({ onLogout }) {
               <Link to="/film" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Film</Link>
               <Link to="/daftar-saya" style={{ color: '#ccc', textDecoration: 'none', fontSize: '14px' }}>Daftar Saya</Link>
               <div style={{ position: 'relative' }}>
-                <button onClick={() => setGenreOpen(!genreOpen)} style={{ background: '#2b2b2b', border: 'none', color: 'white', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
-                  Genre ▼
+                <button
+                  onClick={() => setGenreOpen(p => !p)}
+                  style={{ background: '#2b2b2b', border: 'none', color: 'white', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  {tontonanGenre === 'Semua' ? 'Genre' : tontonanGenre} <span style={{ fontSize: '10px' }}>▼</span>
                 </button>
                 {genreOpen && (
                   <div style={{ position: 'absolute', top: '42px', left: 0, background: '#1b1b1b', width: '320px', padding: '14px', borderRadius: '6px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', boxShadow: '0 0 10px rgba(0,0,0,.5)', zIndex: 999 }}>
                     {genres.map(genre => (
-                      <div key={genre} style={{ color: '#ddd', fontSize: '12px', cursor: 'pointer', padding: '4px' }}>{genre}</div>
+                      <div
+                        key={genre}
+                        onClick={() => { setTontonanGenre(genre); setGenreOpen(false) }}
+                        style={{ color: tontonanGenre === genre ? '#E50914' : '#ddd', fontSize: '12px', cursor: 'pointer', padding: '4px', fontWeight: tontonanGenre === genre ? 'bold' : 'normal' }}
+                      >
+                        {genre}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -415,12 +424,18 @@ function Header({ onLogout }) {
           <Link to="/film" onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', color: '#ccc', textDecoration: 'none', fontSize: '14px', borderBottom: '1px solid #2a2a2a' }}>Film</Link>
           <Link to="/daftar-saya" onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 16px', color: '#ccc', textDecoration: 'none', fontSize: '14px', borderBottom: '1px solid #2a2a2a' }}>Daftar Saya</Link>
           <div style={{ padding: '12px 16px', cursor: 'pointer' }} onClick={() => setGenreOpen(p => !p)}>
-            <span style={{ color: '#ccc', fontSize: '14px' }}>Genre {genreOpen ? '▲' : '▼'}</span>
+            <span style={{ color: '#ccc', fontSize: '14px' }}>{tontonanGenre === 'Semua' ? 'Genre' : tontonanGenre} {genreOpen ? '▲' : '▼'}</span>
           </div>
           {genreOpen && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', padding: '0 16px 12px' }}>
               {genres.map(genre => (
-                <div key={genre} style={{ color: '#aaa', fontSize: '12px', padding: '4px 0' }}>{genre}</div>
+                <div
+                  key={genre}
+                  onClick={() => { setTontonanGenre(genre); setMenuOpen(false); setGenreOpen(false) }}
+                  style={{ color: tontonanGenre === genre ? '#E50914' : '#aaa', fontSize: '12px', padding: '4px 0', cursor: 'pointer', fontWeight: tontonanGenre === genre ? 'bold' : 'normal' }}
+                >
+                  {genre}
+                </div>
               ))}
             </div>
           )}
@@ -577,19 +592,37 @@ function Footer() {
 function HomePage() {
   const navigate = useNavigate()
   const [selectedMovie, setSelectedMovie] = useState(null)
+  const [tontonanGenre, setTontonanGenre] = useState('Semua')
+
+  const filteredSections = sections.map(s => ({
+    ...s,
+    movies: tontonanGenre === 'Semua'
+      ? s.movies
+      : s.movies.filter(m => m.genre.includes(tontonanGenre)),
+  })).filter(s => s.movies.length > 0)
 
   return (
     <div style={{ background: '#181818', color: 'white', minHeight: '100vh', margin: 0, padding: 0, fontFamily: 'Arial, sans-serif' }}>
-      <Header onLogout={() => {
-        localStorage.removeItem('isPremium')
-        localStorage.removeItem('premiumPlan')
-        navigate('/login')
-      }} />
-      
-      <Hero onSelect={setSelectedMovie} /> 
-      {sections.map(s => (
-        <Carousel key={s.title} title={s.title} movies={s.movies} onSelect={setSelectedMovie} />
-      ))}
+      <Header
+        onLogout={() => {
+          localStorage.removeItem('isPremium')
+          localStorage.removeItem('premiumPlan')
+          navigate('/login')
+        }}
+        tontonanGenre={tontonanGenre}
+        setTontonanGenre={setTontonanGenre}
+      />
+
+      <Hero onSelect={setSelectedMovie} />
+      {filteredSections.length === 0 ? (
+        <div style={{ textAlign: 'center', color: '#aaa', padding: '60px 0', fontSize: '16px' }}>
+          Tidak ada film dengan genre "{tontonanGenre}".
+        </div>
+      ) : (
+        filteredSections.map(s => (
+          <Carousel key={s.title} title={s.title} movies={s.movies} onSelect={setSelectedMovie} />
+        ))
+      )}
       <Footer />
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
